@@ -1,13 +1,97 @@
 Q.1 Consider the parameters N = 3551, e = 5, d = 1373, and c = 888, all
     represented in decimal.  Use them to explain, in your own words, the
     principle of this attack (e.g., how and why it works).
+
+    Aim:            The attacker wishes to determine the plaintext m ≡ c^d (mod N) corresponding to a given ciphertext c.
+
+    Calculations:   Let B = 2^8(k-1), k = ceil(log_256(N)). Where k is the byte length of N.
+                    In this attack k = 2 and B = 256.
+
+    Assumption 1:   An attacker has access to an oracle that for any chosen ciphertext c' indicates whether the
+                    corresponding plaintext y ≡ c'^d (mod N) is less than B or not — returning “y < B” (LT_B) or “y ≥ B” (GT_OR_EQ_B).
+    Assumption 2:   An attacker knows the public key (N,e)
+    Assumption 3:   2B < N. This assumption will usually be satisfied as RSA moduli are usually chosen to be exact multiples of 8 bits long.
+
+    Overview:       The basic concept of this attack is to keep changing the ciphertext c in a specific way in order to reduce the range between which m exists.
+                    The attacker chooses a multiple f_i and sends c_new = f_i^e · c (mod N) to the oracle.
+
+                    Given the homomorphic properties of RSA, this ciphertext corresponds to the plaintext f_i · m, and provides a mathematical relationship between c and m.
+
+                    The corresponding error codes from the oracle reveal information about the range.
+                    The aim is to reduce this range with successive oracle queries until just one value is left, m.
+                    As we know that know that m is a valid RSAES-OAEP plaintext, we know that the plaintext m is within a range 0 <= m < B.
+
+    Step 1:         The first step is to increment f1 by powers of 2 until * condition is met. Then return f1.
+                    IF LT_B.        Range: [0,B)        0   <= f1 * m  < 256
+                  * IF GT_OR_EQ_B.  Range: [B,2B)       256 <= f1 * m  < 512
+                    ELSE error
+
+        N = 551, e = 5, d = 101 and c = 243, B = 256.
+        N = 3551, e = 5, d = 1373, and c = 888, B = 256.
+                                                 (Iteration 1)      | (Iteration 2)
+        Attack:     f1                              = 2             |     4
+                    c_new = f1^e  *  c  mod  N      = 8 -> LT_B     |     256  ->  GT_OR_EQ_B * condition is met
+                                                               (Iteration 1)      | (Iteration 2)
+
+        Attack:     f1                              = 2             |     4
+                    c_new = f1^e  *  c  mod  N      = 8 -> LT_B     |     256  ->  GT_OR_EQ_B * condition is met
+
+
+
+    Step 2:         The second step is to compute an f_2 = floor((n+B)/B) * f_1/2. This ensures, Range: N/2 < f2 * m < N + B
+                    The attack then increments f2 = f2 + f1/2 until * condition is met.
+                    IF GT_OR_EQ_B.  Range:  [n/2,n)     3551/2 <= f2 * m  < 3551     (1775.5)
+                  * IF LT_B.        Range:  [n,n+B)     3551   <= f2 * m  < 3807
+                    ELSE error
+
+          Attack:   f_1                            = 8
+                    f_2 = floor((n+B)/B) * f_1/2   = 56
+                    c_new = f2^e  *  c  mod  N     = 21  -> LT_B * condition is met
+
+    Step 3:         (3.1) This third step is to first calculate m_min = ceil(N  / f2)  and  m_max = floor((N + B) / f2)
+                    (3.2) Then select a value f_tmp s.t. there are approximately 2B possible values for f_tmp * m.
+                          By selecting f_tmp = floor(2*B / (m_max - m_min)).
+                    (3.3) And a boundary point i = floor(f_tmp * m_min / N), to act as our mid-point in the range.
+                    (3.4) Choose a multiple f_3 = ceil(i * N / m_min).
+                          Range: i*N + B < f3 * m  < i*N + 2B
+                    (3.5) The attacker can then adjust m_min = ceil((i * N + B) / f3)  or  m_max = floor((i * N + B) / f3) accordingly on
+                          each iteration going back to step (3.2), until * condition is met.
+                    This method effectively halves the search space with each iteration, until m_min = m_max = m.
+                    IF GT_OR_EQ_B.    Range: [i*N,i*N+B)     i*N     <= f3 * m  < i*N + B
+                    IF LT_B.          Range: [i*N+B,i*N+2B)  i*N + B <= f3 * m  < i*N + 2B
+                  * IF m_min = m_max  Range: m_min  <= f3 * m  <= m_max
+
+            Attack: f_2   = 56
+                    m_max = floor((N + B) / f2)          = 67
+                    m_min = ceil(N  / f2)                = 64
+
+                                                        (Iteration 1)           |   (Iteration 2)
+                    f_tmp = floor(2*B / (m_max - m_min)) =  170                 |       512
+                    i     = floor(f_tmp * m_min / N)     =  3                   |       9
+                    f_3   = ceil(i * N / m_min)          =  167                 |       500
+                    c_new = f3^e  *  c  mod  N           =  2468 -> GT_OR_EQ_B  |       867  -> GT_OR_EQ_B
+                    m_max = floor((i * N + B) / f3)      =  65   -> Update      |       46   -> Update
+                    m_min = ceil((i * N + B) / f3)       =  64                  |       64
+
+                    m_min = m_max * condition is met
+
+
 Q.2 To prevent the attack, the vendor suggests altering the software: the
     idea is that no matter what error occurs, the same error code will be
     produced.  Explain whether (and why, or why not) this change alone is
     sufficient.
+
+    This change alone is not sufficient to prevent the attack. The attacker can use side-channel attacks to distinguish the errors.
+    For example, if the oracle returns an error as soon as it occurs, there will be a time difference.
+    An attacker can use this difference to distinguish between errors and the same attack can be  performed, regardless of the error message actual contents.
+
 Q.6 RSA has a homomorphic property: explain what this means, and how it
     relates to this attack.
+    This means that mathematical operations to be performed on encrypted data without compromising the encryption.
+    In this attack it means that the ciphertext c can be modified by a multiple f_i, and it holds that the corresponding plaintext will be f_i · m.
+
 Q.8 Imagine you are a security consultant, employed by the device vendor.
     The vendor has heard that exponent and message blinding can be used to
     prevent some side-channel attacks on RSA.  Explain whether these
     techniques would prevent this attack, and why.
+

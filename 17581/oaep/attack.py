@@ -18,6 +18,10 @@ def Read_Params( file ) :
     return ( N, e, l , c )
 
 def Initialise_Input( N, e, l , c ) :
+    # N = 3551
+    # e = 5
+    # c = 888
+    # l = ''
     N = os2ip(N)
     e = os2ip(e)
     c = os2ip(c)
@@ -60,6 +64,7 @@ def RSA_Decryption(N, e, l, c, B, k):
     return EM
 
 # Chosen Ciphertext Attack
+# Reference: "A Chosen Ciphertext Attack on RSA Optimal Asymmetric Encryption Padding (OAEP) as Standardized in PKCS #1 v2.0" - James Manger
 def CCA_Attack(N, e, l , c, B) :
     f1 = CCA_Stage1(N, e, l, c)
     f2 = CCA_Stage2(N, e, l, c, B, f1)
@@ -73,23 +78,23 @@ def CCA_Stage1(N, e, l, c):
         c_new = ( c * pow( f1 , e , N ) ) % N                   # (1.2)
         c_new = Padding( c, c_new )
         error = Interact( l , c_new )
-        if error == LT_B :                                      # (1.3a) RANGE: 0  < f1 * m  < B
+        if error == LT_B :                                      # (1.3a) RANGE: [0,B)       0  <= f1 * m  < B
             f1 = f1 << 1
-        elif error == GT_OR_EQ_B:                               # (1.3b) RANGE: B  < f1 * m  < 2B,   where 2B < N
+        elif error == GT_OR_EQ_B:                               # (1.3b) RANGE: [B,2B)      B  <= f1 * m < 2B,   where 2B < N
             break
         else:
             raise Exception("CCA_Stage1 Interaction output not within bounds. Error = " + str(error))
     return f1
 
 def CCA_Stage2(N, e, l, c, B, f1):
-    f2 = Divide_Floor( (N + B) , B ) * (f1 / 2)                 # (2.1)   RANGE: B/2 < f2 / 2 * m < B
+    f2 = Divide_Floor( (N + B) , B ) * (f1 / 2)                 # (2.1) RANGE: [B/2,B)      B/2 <= f2 / 2 * m < B
     while(True):
-        c_new = ( c * pow( f2 , e , N ) ) % N                   # (2.2)   RANGE: N/2 < f2 * m < N + B
+        c_new = ( c * pow( f2 , e , N ) ) % N                   # (2.2) RANGE: [N/2,N+B)    N/2 <= f2 * m < N + B
         c_new = Padding( c, c_new )
         error = Interact( l , c_new )
-        if error == GT_OR_EQ_B:                                 # (2.3a) RANGE: N/2 < f2 * m  < N
+        if error == GT_OR_EQ_B:                                 # (2.3a) RANGE: [N/2,N)     N/2 <= f2 * m  < N
             f2 += f1 / 2
-        elif error == LT_B :                                    # (2.3b) RANGE: N   < f2 * m  < N + B
+        elif error == LT_B :                                    # (2.3b) RANGE: [N,N+B)     N   <= f2 * m  < N + B
             break
         else:
             raise Exception("CCA_Stage2 Interaction output not within bounds. Error = " + str(error))
@@ -105,14 +110,15 @@ def CCA_Stage3(N, e, l, c, B, f2):
         c_new = (c * pow(f3, e, N)) % N
         c_new = Padding( c, c_new )
         error = Interact( l, c_new )
-        if error == GT_OR_EQ_B:                                 # (3.5a)  RANGE: i*N     < f3 * m  < i*N + B
+        if error == GT_OR_EQ_B:                                 # (3.5a)  RANGE: [i*N,i*N+B)     i*N     <= f3 * m  < i*N + B
             m_min = Divide_Ceil((i * N + B), f3)
-        elif error == LT_B:                                     # (3.5b)  RANGE: i*N + B < f3 * m  < i*N + 2B
+        elif error == LT_B:                                     # (3.5b)  RANGE: [i*N+B,i*N+2B)  i*N + B <= f3 * m  < i*N + 2B
             m_max = Divide_Floor((i * N + B), f3)
         else:
             raise Exception("CCA_Stage3 Interaction output not within bounds. Error = " + str(error))
     return m_min
 
+# Reference: "Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1" - Section 7.1.2
 def EME_OAEP_Decoding(EM, l):
     # a.
     # If the label L is not provided, let L be the empty string.
@@ -152,8 +158,8 @@ def EME_OAEP_Decoding(EM, l):
 
     lHash_, PS, OxO1, M = DB[:2*hLen], DB[2*hLen:index], DB[index:index+2], DB[index+2:]
 
-    # print str(os2ip(lHash))
-    # print str(os2ip(lHash_))
+    print str(os2ip(lHash))
+    print str(os2ip(lHash_))
 
     # Check for errors
     # If lHash does not equal lHash_ todo why not equal
