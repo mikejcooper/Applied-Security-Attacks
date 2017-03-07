@@ -1,18 +1,14 @@
 import sys, subprocess
-import math
 import random
 from timeit import default_timer
-
 from montgomery import *
-
 
 ORACLE_QUERIES = 0
 
-
-# Defining the word length todo set as runtime ??
-w = 64
-b = 1 << w
-mask = pow(2,w) - 1
+# SET AT RUNTIME:
+BITS = 0  # X-Bit: mpz_size(N) * 4
+b = 0     # Montgomery Multiplication
+mask = 0  # pow(2,BITS) - 1 , max number before integer overflow
 
 
 def Read_Params( file ) :
@@ -27,6 +23,13 @@ def Initialise_Input( N, e ) :
     e = int(e, 16) # Convert Hex to Int
     return ( N, e )
 
+# Initialise Global variables, dependent on size of N (allows for variable X-Bit target processor)
+def Initialise_Globals( N ) :
+    globals().update( BITS = mpz_size(N) * 4 )
+    globals().update( b = 1 << BITS )
+    globals().update( mask = pow(2,BITS) - 1 )
+    Initialise_Globals_Mont(N)
+
 def Interact( c ) :
     # Send Ciphertext c as Hexidecimal string to attack target.
     target_in.write( "%s\n" % ( toHex(c) ) )
@@ -37,33 +40,6 @@ def Interact( c ) :
     globals().update(ORACLE_QUERIES = ORACLE_QUERIES + 1)
     return ( t, m )
 
-def playground() :
-    m1 = toHexInt("hello My name is michael james cooper and I hope this is a large numberr")
-    c = pow_mod(m1, e, N)
-
-    (t, m) = Interact(c)
-
-
-    print "time: " + str(t)
-    print "message: " + Int2Hex2Char(m)
-
-
-# Generate test ciphertexts
-def generate_cs(N, d, r_sq, omega):
-    times , c_p, c_cur = [], [], []
-    print "Generating messages"
-    for i in range(13000):
-        c = random.randint(0, N)                        # Produce random Ciphertext between 0 <= c <= N
-        c_p.append(mont_mul(c, r_sq, N, omega)[0])      # Store c * r_sq mod N
-        c_cur.append(mont_L2R_exp(c_p[i], d, N, r_sq, omega)) # Calculate and Store
-
-        time, test_message = Interact(c)    # Interact using random Ciphertext
-        times.append(time)                 # Store time
-                             # Store
-
-    return times, c_p, c_cur, c, test_message
-
-
 # Generate random Ciphertexts 0 <= c <= N
 def Generate_Ciphertexts(N) :
     ciphertexts = []
@@ -71,27 +47,40 @@ def Generate_Ciphertexts(N) :
         ciphertexts.append(random.randint(0, N))
     return ciphertexts
 
+def Generate_Red_Dec_Time(ciphertexts, N, r_sq, omega, d) :
+    reduced, decryption, times = [], [], []
+    for i, c in enumerate(ciphertexts):
+        reduced.append(mont_mul(c, r_sq, N, omega)[0])                  # Generate Reduced Ciphertexts using r_sq
+        decryption.append(mont_L2R_exp(reduced[i], d, N, r_sq, omega))  # Generate 1st Decryption Ciphertexts using initial d = 1 value
+        times.append(Interact(c)[0])                                    # Generate Times from oracle interaction
+    return ( reduced, decryption, times )
+
+# Create test Message and Ciphertext
+def Create_Test():
+    message = toHexInt("Hello World")
+    ciphertext = pow_mod(message, e, N)
+    return message, ciphertext
+
 def get_avg(values):
     return sum(values) // len(values)
 
 
 def Attack ( N , e ) :
-    # Initialise Montgomery Params
-    omega, r_sq = mont_omega(N), mont_r_sq(N)
+    # Initialise Params
+    omega, r_sq, d = mont_omega(N), mont_r_sq(N), 1
+    test_message, test_cipher = Create_Test()
 
-    c_times, c_p, c_cur, test_cipher, test_message = generate_cs(N, d, r_sq, omega)
+    ciphertexts = Generate_Ciphertexts(N)
+    c_reduced, c_decryption, c_times = Generate_Red_Dec_Time(ciphertexts, N, r_sq, omega, d)
+    print "Decrypting bit %d, Private Key (Binary): %s" % (0, bin(d)[2:])
 
-
-    d = 1
-    print "Testing key bits"
-    for n in range( 0, w) :  # For each bit in private exponent d
+    for n in range( 0, 64 ) :  # For each bit in private exponent d
         is0, not0, is1, not1, c0, c1 = [], [], [], [], [], []
-        for i, c in enumerate(c_p):
-            TEMP = mont_L2R_exp(c, d, N, r_sq, omega)
-            flag0, flag1, ci_0, ci_1 = next_bit_check(c,N,omega,TEMP)
+        for i, c in enumerate(c_reduced):
+            # Check if reduction is required for next bit (0 or 1) in private exponent
+            flag0, flag1, ci_0, ci_1 = next_bit_check( c , N, omega, c_decryption[i] )
             c0.append(ci_0)
             c1.append(ci_1)
-
             if flag0 :
                 is0.append(c_times[i])
             else :
@@ -101,94 +90,34 @@ def Attack ( N , e ) :
             else :
                 not1.append(c_times[i])
 
-        # Calculate the distinguisher
+        # Calculate differences
         diff0 = get_avg(is0) - get_avg(not0)
         diff1 = get_avg(is1) - get_avg(not1)
 
-        # Statistically guess a bit
-        # If there is no difference, regenerate all messages and try this bit again
+        # Statistical prediction
+        # If there is no difference, regenerate and try again
         if diff0 > diff1:
-            d <<= 1
-            c_cur = c0
+            d <<= 1                 # ith bit, di = 0
+            c_decryption = c0       # Correctly decrypted ciphertexts up to current iteration
         elif diff1 > diff0:
-            d = (d << 1) + 1
-            c_cur = c1
+            d = (d << 1) + 1        # ith bit, di = 1
+            c_decryption = c1       # Correctly decrypted ciphertexts up to current iteration
         else:
-            print "Can't distinguish a bit"
-            print "Bit 0: %d" % diff0
-            print "Bit 1: %d" % diff1
-            print "Regenerating Messages"
-            c_times, c_p, c_cur, num_interactions, test_cipher, test_message = generate_cs(N, d, r_sq, omega)
+            print "Can't distinguish a bit. Trying again..."
+            ciphertexts = Generate_Ciphertexts(N)
+            c_reduced, c_decryption, c_times = Generate_Red_Dec_Time(ciphertexts, N, r_sq, omega, d)
 
-        print "Guessing bit %d, Key: %X" % (n, d)
-        # Test if we have recovered the key by decrypting a ciphertext
-        # This is done by bruteforcing the final bit, as we can't exploit
-        # the square in the next round due to there not being another round
+        print "Decrypting bit %d, Private Key (Binary): %s" % (n+1, bin(d)[2:])
+        # Test if private key has been found
         if pow(test_cipher, d << 1, N) == test_message:
             d <<= 1
+            print "Decrypting bit %d, Private Key (Binary): %s" % (n+2, bin(d)[2:])
             break
         elif pow(test_cipher, (d << 1) + 1, N) == test_message:
             d = (d << 1) + 1
+            print "Decrypting bit %d, Private Key (Binary): %s" % (n+2, bin(d)[2:])
             break
-
-    # Print results
-    print "Key Recovered"
-    print "Key: %X" % d
-    print "Message decrypted by key: %X" % pow(test_cipher, d, N)
-    print "Message decrypted by system: %X" % test_message
-
-    return "Hi"
-
-
-def pow_mod(x, y, z):
-    "Calculate (x ** y) % z efficiently."
-    number = 1
-    while y:
-        if y & 1:
-            number = number * x % z
-        y >>= 1
-        x = x * x % z
-    return number
-
-# Convert to Hex string
-def toHex(X):
-    if isinstance(X, ( int, long )):
-        return "%X\n" % X
-    elif X == '':
-        return 0
-    else:
-        return X.encode('hex')
-
-# Convert to integer value of Hex string
-def toHexInt(X):
-    if isinstance(X, ( int, long )):
-        return int(hex(X), 16)
-    elif X == '':
-        return 0
-    else:
-        return int(X.encode('hex'), 16)
-
-# Convert to Hex string
-def fromHex(X):
-    if X == '':
-        return 0
-    else:
-        return X.strip().decode('hex')
-
-# Convert to Hex string
-def Int2Hex2Char(X):
-    if X == '':
-        return 0
-    else:
-        return toHex(X).strip().decode('hex')
-
-# Convert from Hex string to integer
-def Hex2Int(X):
-    if X == '':
-        return 0
-    else:
-        return int(X, 16)
-
+    return d
 
 
 
@@ -208,13 +137,23 @@ if ( __name__ == "__main__" ) :
     # ( Modulus, Public exponent )
     (N, e) = Initialise_Input(N, e)
 
+    # Initialise Global variables, dependent on size of N (allows for variable X-Bit target processor)
+    Initialise_Globals(N)
 
+    print "** Start Timing Attack **"
 
-    # RSA OAEP Decryption
-    Message = Attack(N, e)
+    # Timing Attack
+    PrivateKey = Attack(N, e)
 
-    # print "Decoded Message: " + Message
+    if check(PrivateKey, e, N) :
+        print "** Key Recovery Successful **"
+    else :
+        print "** Key Recovery Unsuccessful: Error **"
+
     print "Oracle uses:", str(ORACLE_QUERIES)
+    print "Private Key (Binary): %s" % bin(PrivateKey)[2:]
+    print "Private Key (Hex): %X" % PrivateKey
+
 
 
 
