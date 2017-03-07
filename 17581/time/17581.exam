@@ -12,3 +12,63 @@ Q.5 The level of noise, n, within measurements of execution time will
 Q.6 Let n denote the number of simulated clock cycles required to execute a
     Montgomery multiplication on the attack target.  Estimate the value of
     n (as accurately as you can) and explain how you did so.
+
+
+
+
+d = A7482536D8F7C91B
+interactions = 13000
+Guessing bit 1
+Key: 2
+Guessing bit 2
+Key: 5
+Guessing bit 3
+Key: A
+Guessing bit 4
+Key: 14
+Guessing bit 5
+Key: 29
+Guessing bit 6
+Key: 53
+Guessing bit 7
+Key: A7
+Guessing bit 8
+Key: 14E
+Guessing bit 9
+Key: 29D
+Guessing bit 10
+Key: 53A
+Guessing bit 11
+Key: A74
+Guessing bit 12
+Key: 14E9
+Guessing bit 13
+Key: 29D2
+Guessing bit 14
+Key: 53A4
+Guessing bit 15
+Key: A748
+Guessing bit 16
+Key: 14E90
+Guessing bit 17
+Key: 29D20
+Guessing bit 18
+Key: 53A41
+Guessing bit 19
+Key: A7482
+Guessing bit 20
+Key: 14E904
+Guessing bit 21
+Key: 29D209
+Guessing bit 22
+Key: 53A412
+Guessing bit 23
+Key: A74825
+Guessing bit 24
+Key: 14E904A
+Guessing bit 25
+Key: 29D2094
+Guessing bit 26
+
+
+

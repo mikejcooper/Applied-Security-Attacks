@@ -2,6 +2,7 @@ import hashlib
 import sys, subprocess
 from math import log,ceil
 
+
 LT_B = 2          # Less than B
 GT_OR_EQ_B = 1    # Greater than or equal to B
 ORACLE_QUERIES = 0
@@ -33,8 +34,8 @@ def Initialise_Input( N, e, l , c ) :
 # Expected label l and ciphertext c as octet strings
 def Interact( l, c ) :
     # Send (l,c) to attack target.
-    target_in.write( "%s\n" % ( i2osp(l) ) ) ;
-    target_in.write( "%s\n" % ( i2osp(c) ) ) ;
+    target_in.write( "%s\n" % ( i2osp(l) ) )
+    target_in.write( "%s\n" % ( i2osp(c) ) )
     target_in.flush()
     # Receive A from attack target.
     A = int( target_out.readline().strip() )
@@ -46,7 +47,7 @@ def RSAES_OAEP_DECRYPT(N, e, l, c, B, k):
     EM = RSA_Decryption(N, e, l, c, B, k)
     print "Encoded Message: " + EM
     # 3.
-    Message = EME_OAEP_Decoding(EM, l)
+    Message = EME_OAEP_Decoding(EM, l, k)
     return Message
 
 def RSA_Decryption(N, e, l, c, B, k):
@@ -119,10 +120,13 @@ def CCA_Stage3(N, e, l, c, B, f2):
     return m_min
 
 # Reference: "Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1" - Section 7.1.2
-def EME_OAEP_Decoding(EM, l):
+def EME_OAEP_Decoding(EM, l, k):
     # a.
     # If the label L is not provided, let L be the empty string.
     L = i2osp(l)
+
+    print L
+
     hashObject = hashlib.sha1(L)
     # Hash of L as hex string
     lHash = hashObject.hexdigest()
@@ -276,17 +280,5 @@ if ( __name__ == "__main__" ) :
 
     print "Decoded Message: " + i2osp(Message)
     print "Oracle uses:", str(ORACLE_QUERIES)
-
-
-
-
-
-
-
-
-
-
-
-
 
 

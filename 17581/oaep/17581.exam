@@ -87,6 +87,7 @@ Q.2 To prevent the attack, the vendor suggests altering the software: the
 
 Q.6 RSA has a homomorphic property: explain what this means, and how it
     relates to this attack.
+
     This means that mathematical operations to be performed on encrypted data without compromising the encryption.
     In this attack it means that the ciphertext c can be modified by a multiple f_i, and it holds that the corresponding plaintext will be f_i · m.
 
@@ -95,3 +96,12 @@ Q.8 Imagine you are a security consultant, employed by the device vendor.
     prevent some side-channel attacks on RSA.  Explain whether these
     techniques would prevent this attack, and why.
 
+
+* Blinding RSA with some random value /r/ leads to corresponding timings being uncorrelated to the operations being performed. Precisely, before encryption the message is randomised in reversible manner therefore leading to simulation not corresponding to measures.
+* Always performing reduction, whether it is needed or not can lead to non-informative time traces, therefore preventing timing attack.
+
+There are a number of options to counter this attack. The first option against this attack specifically is to use the Chinese Remainder Theorem; because the attacker doesn't know p and q, they would no longer be able to simulate the model. However, there are already theoretical attacks against this countermeasure.
+
+A similar method is to blind the message. This involves selecting a pair v_i and v_f such that v_i = v_f^-e (mod N). Before we begin decrypting our ciphertext c, we create c' = c * v_i (mod N). After decryption, we get m' = c^d * v_i^d = m * (v_f^-e)^d = m * v_f^-1 (mod N). We can then multiply this by v_f and get m' * v_f = m * v_f^-1 * v_f = m (mod N). If these values are kept secret, the attacker cannot learn anything useful about the input to the modular exponentiation. It should be noted that v_i and v_f should be different for each encryption, otherwise there is a risk of extracting them based on timing analysis. These can be easily computed however: Randomly compute an initial v_i and v_j at the start of the program's execution, and for each encryption produce new values as v_i' = v_i^2 and v_j' = v_j^2.
+
+The final method I looked at was to compute the reduction in every multiplication and return one of the two results depending on whether or not R >= N. This method means that the Montgomery Multiplication now runs in constant time, but doesn't guarantee a lack of timing attacks in other areas.
