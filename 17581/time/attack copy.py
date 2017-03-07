@@ -1,8 +1,6 @@
 import sys, subprocess
 import math
 import random
-from timeit import default_timer
-
 from montgomery import *
 
 
@@ -50,19 +48,22 @@ def playground() :
 
 # Generate test ciphertexts
 def generate_cs(N, d, r_sq, omega):
-    times , c_p, c_cur = [], [], []
+    c_time = []
+    c_p = []
+    c_cur = []
+
     print "Generating messages"
     for i in range(13000):
-        c = random.randint(0, N)                        # Produce random Ciphertext between 0 <= c <= N
-        c_p.append(mont_mul(c, r_sq, N, omega)[0])      # Store c * r_sq mod N
-        c_cur.append(mont_L2R_exp(c_p[i], d, N, r_sq, omega)) # Calculate and Store
-
+        c = random.randint(0, N)            # Produce random Ciphertext between 0 <= c <= N
         time, test_message = Interact(c)    # Interact using random Ciphertext
-        times.append(time)                 # Store time
-                             # Store
+        c_time.append(time)                 # Store time
 
-    return times, c_p, c_cur, c, test_message
+        c_mont, _ = mont_mul(c, r_sq, N, omega) # Calculate:  c * r_sq mod N
+        c_p.append(c_mont)                       # Store
 
+        c_cur.append(mont_L2R_exp(c, d, N, r_sq, omega)) # Calculate and Store
+
+    return c_time, c_p, c_cur, c, test_message
 
 # Generate random Ciphertexts 0 <= c <= N
 def Generate_Ciphertexts(N) :
@@ -75,67 +76,118 @@ def get_avg(values):
     return sum(values) // len(values)
 
 
+
+from timeit import default_timer
+
+
 def Attack ( N , e ) :
-    # Initialise Montgomery Params
-    omega, r_sq = mont_omega(N), mont_r_sq(N)
+    omega, r_sq = mont_omega(N), mont_r_sq(N)               # Initialise Montgomery Params
+    d = 1                                                   # Set d to binary = 000001
+    # ciphertexts = Generate_Ciphertexts(N)                   # Generate random Ciphertexts 0 <= c <= N
+    # timings = []
+    # r = []
+    # for c in ciphertexts:
+    #     timings.append( Interact(c)[0] )                    # Store time interaction for each Ciphertext
+    #     r.append(mont_L2R_exp(c, d, N, r_sq, omega))
+    #
+    # for n in range(0, w):  # For each bit in private exponent d
+    #     start = default_timer()
+    #     is0, not0, is1, not1 = [], [], [], []
+    #     for i, c in enumerate(ciphertexts):
+    #         # Calculate r for current d
+    #         # Check if reduction is required for next bit (0 or 1) in private exponent
+    #         (flag0, flag1) = next_bit_check(c, N, omega, r[i])
+    #         if flag0 :
+    #             is0.append(timings[i])
+    #         else :
+    #             not0.append(timings[i])
+    #         if flag1:
+    #             is1.append(timings[i])
+    #         else:
+    #             not1.append(timings[i])
+    #
+    #     # Calculate the distinguisher
+    #     diff0 = get_avg(is0) - get_avg(not0)
+    #     diff1 = get_avg(is1) - get_avg(not1)
+    #
+    #     # Statistically guess a bit
+    #     # If there is no difference, regenerate all messages and try this bit again
+    #     if diff0 > diff1:
+    #         d <<= 1
+    #     elif diff1 > diff0:
+    #         d = (d << 1) + 1
+    #
+    #     print "Guessing bit %d, Key: %X" % (n, d)
+    #     print default_timer() - start
 
-    c_times, c_p, c_cur, test_cipher, test_message = generate_cs(N, d, r_sq, omega)
+
+    c_time, ciphertexts, c_cur, test_c, test_message = generate_cs(N, d, r_sq, omega)
 
 
-    d = 1
     print "Testing key bits"
     for n in range( 0, w) :  # For each bit in private exponent d
-        is0, not0, is1, not1, c0, c1 = [], [], [], [], [], []
-        for i, c in enumerate(c_p):
-            TEMP = mont_L2R_exp(c, d, N, r_sq, omega)
-            flag0, flag1, ci_0, ci_1 = next_bit_check(c,N,omega,TEMP)
-            c0.append(ci_0)
-            c1.append(ci_1)
+        c_0 = []
+        c_1 = []
+        # Fill in the reduction sets
+        bit0_red = []
+        bit0_nored = []
+        bit1_red = []
+        bit1_nored = []
+        for i, c in enumerate(ciphertexts):
 
-            if flag0 :
-                is0.append(c_times[i])
-            else :
-                not0.append(c_times[i])
-            if flag1 :
-                is1.append(c_times[i])
-            else :
-                not1.append(c_times[i])
+            ci_0, _ = mont_mul(c_cur[i], c_cur[i], N, omega)
+            c_0.append(ci_0)
+            ci_0, red0 = mont_mul(ci_0, ci_0, N, omega)
+            if red0:
+                bit0_red.append(c_time[i])
+            else:
+                bit0_nored.append(c_time[i])
+
+            ci_1, _ = mont_mul(c_cur[i], c_cur[i], N, omega)
+            ci_1, _ = mont_mul(ci_1, c, N, omega)
+            c_1.append(ci_1)
+            ci_1, red1 = mont_mul(ci_1, ci_1, N, omega)
+            if red1:
+                bit1_red.append(c_time[i])
+            else:
+                bit1_nored.append(c_time[i])
 
         # Calculate the distinguisher
-        diff0 = get_avg(is0) - get_avg(not0)
-        diff1 = get_avg(is1) - get_avg(not1)
+        diff_0 = get_avg(bit0_red) - get_avg(bit0_nored)
+        diff_1 = get_avg(bit1_red) - get_avg(bit1_nored)
 
         # Statistically guess a bit
         # If there is no difference, regenerate all messages and try this bit again
-        if diff0 > diff1:
+        if diff_0 > diff_1:
             d <<= 1
-            c_cur = c0
-        elif diff1 > diff0:
+            c_cur = c_0
+        elif diff_1 > diff_0:
             d = (d << 1) + 1
-            c_cur = c1
+            c_cur = c_1
         else:
             print "Can't distinguish a bit"
-            print "Bit 0: %d" % diff0
-            print "Bit 1: %d" % diff1
+            print "Bit 0: %d" % diff_0
+            print "Bit 1: %d" % diff_1
             print "Regenerating Messages"
-            c_times, c_p, c_cur, num_interactions, test_cipher, test_message = generate_cs(N, d, r_sq, omega)
+            c_time, c_p, c_cur, num_interactions, test_c, test_message = generate_cs(N, d, r_sq, omega)
 
         print "Guessing bit %d, Key: %X" % (n, d)
         # Test if we have recovered the key by decrypting a ciphertext
         # This is done by bruteforcing the final bit, as we can't exploit
         # the square in the next round due to there not being another round
-        if pow(test_cipher, d << 1, N) == test_message:
+        if pow(test_c, d << 1, N) == test_message:
             d <<= 1
             break
-        elif pow(test_cipher, (d << 1) + 1, N) == test_message:
+        elif pow(test_c, (d << 1) + 1, N) == test_message:
             d = (d << 1) + 1
             break
 
     # Print results
     print "Key Recovered"
     print "Key: %X" % d
-    print "Message decrypted by key: %X" % pow(test_cipher, d, N)
+    print "Message decrypted by key: %X" % pow(test_c, d, N)
     print "Message decrypted by system: %X" % test_message
+
 
     return "Hi"
 
