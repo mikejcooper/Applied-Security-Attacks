@@ -2,6 +2,8 @@ import math
 # from attack import BITS, b, mask
 
 # SET AT RUNTIME:
+import time
+
 BITS = 0  # X-Bit: mpz_size(N) * 4
 b = 0     # Montgomery Multiplication
 mask = 0  # pow(2,BITS) - 1 , max number before integer overflow
@@ -46,7 +48,8 @@ def mont_mul(x, y, N, omega):
         u = (r0 + yi * x0) * omega % b      # u = (r0 + yi.x0).omega (mod b)
         r = (r + yi * x + u * N) / b        # r = (r + yi.x + u.N) / b
     if (r >= N) :
-        return r - N, True
+        r = r - N
+        return r, True
     else :
         return r, False
 
