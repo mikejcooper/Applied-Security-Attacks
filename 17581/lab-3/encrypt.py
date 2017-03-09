@@ -19,3 +19,7 @@ if ( __name__ == "__main__" ) :
     print "AES.Enc( k, m ) == c"
   else :
     print "AES.Enc( k, m ) != c"
+
+
+
+# k = CB6818217807A5E2599A286817349133

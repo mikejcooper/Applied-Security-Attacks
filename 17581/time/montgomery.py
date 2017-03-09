@@ -93,15 +93,6 @@ def next_bit_check(b, N, omega, c):
 def Divide_Ceil(x, y):
     return -(-x // y)
 
-def pow_mod(x, y, z):
-    number = 1
-    while y:
-        if y & 1:
-            number = number * x % z
-        y >>= 1
-        x = x * x % z
-    return number
-
 # Convert to Hex string
 def toHex(X):
     if isinstance(X, ( int, long )):

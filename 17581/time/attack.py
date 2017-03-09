@@ -52,7 +52,7 @@ def Generate_Red_Dec_Time(N, r_sq, omega, d) :
 # Create test Message and Ciphertext
 def Create_Test():
     message = toHexInt("Hello World")
-    ciphertext = pow_mod(message, e, N)
+    ciphertext = pow(message, e, N)
     return message, ciphertext
 
 def get_avg(values):

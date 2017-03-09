@@ -1,8 +1,6 @@
-import hashlib
 import sys, subprocess
-import random
-import struct
-import Crypto.Cipher.AES as AES
+from Utils import *
+
 
 ORACLE_QUERIES = 0
 
@@ -23,49 +21,16 @@ def Interact( fault, m ) :
 
 
 def playground():
-    print "hey"
     #        r, f, p, i, j
-    fault = "0,0,0,0,0"
-    m = (random.getrandbits(128))
-    print i2osp(random.getrandbits(128))
-    print Interact(fault, m)
+    fault = ""
+    m = ByteToHex(AES_1_Block("hello world"))
+    c = Interact(fault, m)[0]
+
+    k = 'CB6818217807A5E2599A286817349133'
+
+    print AES_check(m,c,k)
 
 
-
-
-def AES_check( message, ciphertext, key ) :
-    c = AES.new(key).encrypt(message)
-    if ciphertext == c:
-        return True
-    else :
-        return False
-
-
-def AES_example():
-    key = "This is my password"
-    message = "hello world"
-    # 128 bit hash
-    key_128 = hashlib.md5(key).digest()
-    message_128 = hashlib.md5(message).digest()
-    ciphertext = AES.new(key_128).encrypt(message_128)
-    print AES_check(message_128, ciphertext, key_128)
-
-
-# Octal String to Integer
-def os2ip(X):
-    if isinstance(X, ( int, long )):
-        return X
-    elif X == '':
-        return 0
-    else:
-        return int(X, 16)
-
-# Integer to Octal String
-def i2osp(X):
-    if isinstance(X, basestring):
-        return X
-    else:
-        return format(X, 'X')
 
 
 if ( __name__ == "__main__" ) :
@@ -79,6 +44,5 @@ if ( __name__ == "__main__" ) :
     target_in  = target.stdin
 
     playground()
-    AES_example()
 
 

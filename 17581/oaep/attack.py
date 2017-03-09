@@ -2,6 +2,7 @@ import hashlib
 import sys, subprocess
 from math import log,ceil
 
+import time
 
 LT_B = 2          # Less than B
 GT_OR_EQ_B = 1    # Greater than or equal to B
@@ -19,16 +20,13 @@ def Read_Params( file ) :
     return ( N, e, l , c )
 
 def Initialise_Input( N, e, l , c ) :
-    # N = 3551
-    # e = 5
-    # c = 888
-    # l = ''
     N = os2ip(N)
     e = os2ip(e)
     c = os2ip(c)
     l = os2ip(l)
     k = int(ceil(log(N, 256)))  # Byte Length of N
     B = pow(2, 8 * (k - 1))
+
     return ( N, e, l, c, B, k )
 
 # Expected label l and ciphertext c as octet strings
@@ -45,10 +43,19 @@ def Interact( l, c ) :
 def RSAES_OAEP_DECRYPT(N, e, l, c, B, k):
     # 2.
     EM = RSA_Decryption(N, e, l, c, B, k)
-    print "Encoded Message: " + EM
+    print "Encoded Message:  " + EM
     # 3.
     Message = EME_OAEP_Decoding(EM, l, k)
     return Message
+
+def pow_mod(x, y, z):
+    number = 1
+    while y:
+        if y & 1:
+            number = number * x % z
+        y >>= 1
+        x = x * x % z
+    return number
 
 def RSA_Decryption(N, e, l, c, B, k):
     # a.
@@ -59,6 +66,12 @@ def RSA_Decryption(N, e, l, c, B, k):
     # Perform Chosen Ciphertext Attack to retrieve m
     m = CCA_Attack(N, e, l, c, B)
 
+    # Check recovered m is correct: m^e mod N == c
+    if pow( m , e , N ) == c  :
+        print "* CCA Attack Successfully Recovered Encoded Message *"
+    else :
+        print "* CCA Attack Unsuccessful: Error *"
+
     # c.
     # Convert the message representative m to an encoded message EM of length k octets
     EM = I2OSP( os2ip(m) , k)
@@ -67,10 +80,12 @@ def RSA_Decryption(N, e, l, c, B, k):
 # Chosen Ciphertext Attack
 # Reference: "A Chosen Ciphertext Attack on RSA Optimal Asymmetric Encryption Padding (OAEP) as Standardized in PKCS #1 v2.0" - James Manger
 def CCA_Attack(N, e, l , c, B) :
+    print "Chosen Cipher Text Attack Stage 1 ..."
     f1 = CCA_Stage1(N, e, l, c)
+    print "Chosen Cipher Text Attack Stage 2 ..."
     f2 = CCA_Stage2(N, e, l, c, B, f1)
+    print "Chosen Cipher Text Attack Stage 3 ..."
     m = CCA_Stage3(N, e, l, c, B, f2)
-    print "Chosen Cipher Text Attack Stage 1, 2, 3 done"
     return os2ip(m)
 
 def CCA_Stage1(N, e, l, c):
@@ -122,11 +137,9 @@ def CCA_Stage3(N, e, l, c, B, f2):
 # Reference: "Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1" - Section 7.1.2
 def EME_OAEP_Decoding(EM, l, k):
     # a.
-    # If the label L is not provided, let L be the empty string.
-    L = i2osp(l)
-
-    print L
-
+    # Set Label - Byte string
+    L = (i2osp(l).decode('hex'))
+    # Hash Label
     hashObject = hashlib.sha1(L)
     # Hash of L as hex string
     lHash = hashObject.hexdigest()
@@ -150,6 +163,7 @@ def EME_OAEP_Decoding(EM, l, k):
 
     # f.
     DB = XOR_OCT( maskedDB , dbMask )
+    print "DB (Data Block):  " + DB
 
     # g.
     # DB =      lHash_   ||    PS   ||   0x01   ||    M
@@ -162,20 +176,17 @@ def EME_OAEP_Decoding(EM, l, k):
 
     lHash_, PS, OxO1, M = DB[:2*hLen], DB[2*hLen:index], DB[index:index+2], DB[index+2:]
 
-    print str(os2ip(lHash))
-    print str(os2ip(lHash_))
-
     # Check for errors
-    # If lHash does not equal lHash_ todo why not equal
-    # if not Compare_OCT(lHash, lHash_):
-    #     raise Exception("lHash does not equal lHash\'.")
+    # If lHash does not equal lHash_
+    if not Compare_OCT(lHash, lHash_):
+        raise Exception("lHash does not equal lHash\'.")
     # If Y is nonzero
     if not Compare_OCT(Y, 0):
         raise Exception("Y is nonzero.")
     # If there is no octet with value 0x01
     if index == -1:
         raise Exception("0x01 was not found.")
-    return M
+    return M, lHash
 
 # MGF1 is a Mask Generation Function based on a hash function.
 def MGF1(mgfSeed, maskLen) :
@@ -189,9 +200,8 @@ def MGF1(mgfSeed, maskLen) :
     # Length in octets
     hLen = hashlib.sha1(T).digest_size
 
-
     # 3.
-    # For counter from 0 to \ceil (maskLen / hLen) - 1 todo why not - 1
+    # For counter from 0 to \ceil (maskLen / hLen) - 1
     for counter in range(0, Divide_Ceil(maskLen, hLen)) :
         # 3.a.
         # Convert counter tp an octet string C of length 4 octets
@@ -233,7 +243,7 @@ def os2ip(X):
 # Integer to Octal String
 def i2osp(X):
     if isinstance(X, basestring):
-        return X
+        return X.upper()
     else:
         return format(X, 'X')
 
@@ -275,10 +285,17 @@ if ( __name__ == "__main__" ) :
     # ( Modulus, Public exponent, Label, Ciphertext, B = 2^(8*(k-1)), #N Bytes)
     (N, e, l, c, B, k) = Initialise_Input(N, e, l, c)
 
-    # RSA OAEP Decryption
-    Message = RSAES_OAEP_DECRYPT(N, e, l, c, B, k)
+    start = time.time()
 
-    print "Decoded Message: " + i2osp(Message)
-    print "Oracle uses:", str(ORACLE_QUERIES)
+    # RSA OAEP Decryption
+    Message, lHash = RSAES_OAEP_DECRYPT(N, e, l, c, B, k)
+
+    end = time.time()
+
+    print "Hashed Label:     " + i2osp(lHash)
+    print "Message:          " + i2osp(Message)
+    print "Oracle uses:      " + str(ORACLE_QUERIES)
+    print "Decryption time:  %ds" % (end - start)
+
 
 
