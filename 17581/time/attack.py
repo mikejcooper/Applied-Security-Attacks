@@ -42,7 +42,7 @@ def Interact( c ) :
 
 def Generate_Red_Dec_Time(N, r_sq, omega, d) :
     mont, decryption, times = [], [], []
-    for i in range(13000):
+    for i in range(10000):
         c = random.randint(0, N)                                        # Generate random Ciphertexts 0 <= c <= N
         mont.append(mont_mul(c, r_sq, N, omega)[0])                     # Convert Ciphertexts into Montgomery Domain
         decryption.append(mont_L2R_exp(mont[i], d, N, r_sq, omega))     # Generate 1st Decryption Ciphertexts using initial d = 1 value
@@ -61,10 +61,6 @@ def get_avg(values):
 def get_var(values):
     avg = get_avg(values)
     return sum([(xi - avg) ** 2 for xi in values]) / len(values)
-
-
-
-
 
 
 def Attack ( N , e ) :
@@ -97,7 +93,6 @@ def Attack ( N , e ) :
         # Calculate differences
         diff0 = get_avg(is0) - get_avg(not0)
         diff1 = get_avg(is1) - get_avg(not1)
-
 
         # Statistical prediction
         # If there is no difference, regenerate and try again
@@ -153,6 +148,7 @@ if ( __name__ == "__main__" ) :
 
     end = time.time()
 
+
     if check(PrivateKey, e, N) :
         print "\n** Key Recovery Successful **"
     else :
@@ -162,6 +158,7 @@ if ( __name__ == "__main__" ) :
     print "Oracle uses:", str(ORACLE_QUERIES)
     print "Private Key (Binary): %s" % bin(PrivateKey)[2:]
     print "Private Key (Hex):    %X" % PrivateKey
+
 
 
 

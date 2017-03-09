@@ -101,36 +101,9 @@ Q.8 Imagine you are a security consultant, employed by the device vendor.
     prevent some side-channel attacks on RSA. Explain whether these
     techniques would prevent this attack, and why.
 
-    Blinding is a technique that allows for an agent to compute a function for a client without knowing either the real input or real output.
-    It can be very useful on attacks such as timing attacks where the
-    In in task we effective only send only information with the 'device' (oracle) one way. We send the ciphertext and receive an single plaintext error message.
-    If we were to use blinding on the the ciphertext c and exponent e, the oracle could not sucessful decrpt the message at all, rendering the procedure useless.
-
-
-Message blinding works by the multiplying the input message with a random value, and after exponentiation removing the effect of the random value.
-Exponent blinding is a similar technique, but applied to the secret exponent.
-In this task, blinding would not prevent this attack. As long as the label for the ciphertext remains valid i.e. the label had been produced using the
-blind ciphertext, then the error messages from the oracle should remain the same.
-
-
-
-* Blinding RSA with some random value /r/ leads to corresponding timings being uncorrelated to the operations being performed.
-Precisely, before encryption the message is randomised in reversible manner therefore leading to simulation not corresponding to measures.
-* Always performing reduction, whether it is needed or not can lead to non-informative time traces, therefore preventing timing attack.
-
-There are a number of options to counter this attack. The first option against this attack specifically is to use the Chinese Remainder Theorem;
-because the attacker doesn't know p and q, they would no longer be able to simulate the model. However, there are already theoretical attacks against this countermeasure.
-
-A similar method is to blind the message. This involves selecting a pair v_i and v_f such that v_i = v_f^-e (mod N). Before we begin decrypting our ciphertext c,
-we create c' = c * v_i (mod N). After decryption, we get m' = c^d * v_i^d = m * (v_f^-e)^d = m * v_f^-1 (mod N). We can then multiply this by v_f and
-get m' * v_f = m * v_f^-1 * v_f = m (mod N). If these values are kept secret, the attacker cannot learn anything useful about the input to the modular exponentiation.
-It should be noted that v_i and v_f should be different for each encryption, otherwise there is a risk of extracting them based on timing analysis.
-These can be easily computed however: Randomly compute an initial v_i and v_j at the start of the program's execution, and for each encryption produce
-new values as v_i' = v_i^2 and v_j' = v_j^2.
-
-The final method I looked at was to compute the reduction in every multiplication and return one of the two results depending on whether or not R >= N.
-This method means that the Montgomery Multiplication now runs in constant time, but doesn't guarantee a lack of timing attacks in other areas.
-
-
+    Message blinding works by the multiplying the input message with a random value (e.g. A hashed value), and after exponentiation removing the effect of the random value.
+    By introducing a different random value for each message, it prevents an attacker from entering a known input to the exponentiation function.
+    If the attacker cannot enter a known input, determining what input has caused the particular error X, becomes much more difficult.
+    Therefore this technique would prevent this attack.
 
 

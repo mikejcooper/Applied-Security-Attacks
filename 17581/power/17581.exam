@@ -18,3 +18,9 @@ Q.7 The power consumption traces you used in this attack are perfectly
     aligned.  What does "alignment" mean in this context, and how could
     misalignment occur in practice?  How could you alter your attack
     strategy to compensate for misalignment?
+
+
+
+
+Blinding the
+RSA moduli helps prevent side channel attacks such as the differential power analysis (DPA) attack and timing attacks that exploit the modular reduction modulo p and q.

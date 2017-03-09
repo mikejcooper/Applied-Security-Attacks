@@ -26,7 +26,6 @@ def Initialise_Input( N, e, l , c ) :
     l = os2ip(l)
     k = int(ceil(log(N, 256)))  # Byte Length of N
     B = pow(2, 8 * (k - 1))
-
     return ( N, e, l, c, B, k )
 
 # Expected label l and ciphertext c as octet strings
@@ -120,6 +119,7 @@ def CCA_Stage3(N, e, l, c, B, f2):
     m_max = Divide_Floor( (N + B)  , f2 )                       # (3.1)  Top of range for m
     m_min = Divide_Ceil( N , f2 )                               # (3.1)  Bottom of range for m
     while m_max != m_min :
+        previous = (m_max, m_min)                               # Used for Infinity check
         f_tmp = Divide_Floor( 2*B , (m_max - m_min) )           # (3.2)
         i = Divide_Floor( f_tmp * m_min , N )                   # (3.3)
         f3 = Divide_Ceil(i * N, m_min)                          # (3.4)
@@ -132,6 +132,9 @@ def CCA_Stage3(N, e, l, c, B, f2):
             m_max = Divide_Floor((i * N + B), f3)
         else:
             raise Exception("CCA_Stage3 Interaction output not within bounds. Error = " + str(error))
+        # Infinity check
+        if previous == (m_max, m_min):
+            raise Exception("CCA_Stage3 Infinite loop")
     return m_min
 
 # Reference: "Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1" - Section 7.1.2

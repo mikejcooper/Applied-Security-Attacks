@@ -113,8 +113,8 @@ def toHexInt(X):
 
 def check(d, e, N):
     message_original = toHexInt("Hello World")
-    ciphertext = pow_mod(message_original, e, N)
-    message_decrypted = pow_mod(ciphertext, d, N)
+    ciphertext = pow(message_original, e, N)
+    message_decrypted = pow(ciphertext, d, N)
     if(message_original == message_decrypted):
         return True
     else :

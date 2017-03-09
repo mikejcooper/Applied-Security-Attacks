@@ -4,18 +4,28 @@ Q.1 The vendor of the attack target is concerned that news of this attack
     options they have, and which one you would recommend.
 
     Option 1: RSA Blinding (Most widely used)
-        Message blinding works by the multiplying the input message with a random value, and after exponentiation removing the effect of the random value.
+        Message blinding works by the multiplying the input message with a random value (e.g. A hashed value), and after exponentiation removing the effect of the random value.
         By introducing a different random value for each message, it prevents an attacker from entering a known input to the exponentiation function.
-        This intern makes the resultant timing information unusable. Blinding incurs a small performance penalty in the range of 1-10%
+        In the example below, the computation time in step 4 is unpredictable as the attack does not know r and intern makes the resultant timing information unusable.
+        Blinding incurs a small performance penalty in the range of 1-10%.
+
+        Example,
+            1. Random value r: 0 < r < N, gcd(r, N) = 1
+            2. Compute: c' = (m * r)^e   mod N      (message blinded)
+            3. Compute: m' = (c')^d      mod N
+            4. Compute: m  = m' * r^-1   mod N      (message unblinded)
+
+        The same technique can be used on the exponent, this is call Exponent blinding.
+        The drawback of Blinding is that there is a slight performance penalty and the need for a reasonably good source of randomness (high entropy) to generate the random value.
 
     Option 2: Always-Compute
         This method involves removing connection between the private key and computation time. If we always compute the extra reduction step in the Montgomery algorithm, but only use the result when needed.
-        Care may need to be taken to prevent the compiler optimising (removing) this extra calculation when it isn't being used.
+        Care may need to be taken to prevent the compiler optimising (removing) this extra calculation when it isn't being used. A practice solution for this may be to use Chinese Remainder Theorem instead.
 
     Option 3: Quantize
         This method involves making all computations take a multiple of some predefined time. However, the major drawback to this is performance, all calculations must  must then take the longest of all computation times.
 
-    I would recommend using both option 1 and 2 as they have very minimal overhead. I would avoid using option 3 as it could make computation time much longer, which is not preferable in most large scale systems.
+    Conclusion: I would recommend option 1, as it has the smallest impact on performance.
 
 Q.2 The vendor of the attack target is concerned that a similar attack may
     also apply to their implementation of ElGamal encryption.  Explain the
@@ -25,20 +35,23 @@ Q.2 The vendor of the attack target is concerned that a similar attack may
     whereas RSA relies on the hardness of factoring. This means that there decryption oracles also differ slightly:
 
     RSA:
-        c = < m^e > mod N, public key = < N, e >,
-        m = < c^d > mod N, private key = < d >
+        key Generation       : private key = < d >, public key = < N, e >
+        Encryption (public)  : c = < m^e > mod N,
+        Decryption (private) : m = < c^d > mod N
     ElGamal:
-        c = < m * h^y, g^y >   mod q,   public key = < q, g, h >, empirical key: y randomly selected {1,...,q-1}
-        m = < c2 * (c1^d)^-1 > mod q,   private key = < d >
+        key Generation       : private key = < d >, public key = < q, g, h >
+        Encryption (public)  : c = < m * h^y, g^y >    mod q,   Empirical key: y randomly selected {1,...,q-1}
+        Decryption (private) : m = < c2 * (c1^d)^-1 >  mod q,
 
     Decryption:
-        RSA-Dec:      Input = ( c ),     Computes: m = c^d  mod N, where the d is the private key.
-        ElGamal-Dec:  Input = ( c1, c2)  Computes: s = c1^d mod q, m = c2 * s^-1 mod q, where d is the private key
+        RSA-Dec:      Input = ( c ),      Computes: m = c^d  mod N, where the d is the private key.
+        ElGamal-Dec:  Input = ( c1, c2 ), Computes: s = c1^d mod q, m = c2 * s^-1 mod q, where d is the private key
 
 
     From the Decryption section we can observer that although RSA and ElGamal perform different operations, they both perform a modular calculations on the message raised to the private exponent d.
-    This means that the same attack can be performed on both RSA and ElGamal.
-
+    So far everything suggests that the same attack will apply to both RSA and ElGamal if both implementations use Montgomery Multiplication, however there is one key difference.
+    In the case of ElGamal, the exponent e is usually not fixed, but instead varies from one call to another. This is done by reseeding the 'Empirical key: y'.
+    Therefore for this attack to be valid for Elgamal encryption, it's necessary to use the same empirical key for each message.
 
 Q.5 The level of noise, n, within measurements of execution time will
     influence the number of measurements, m, required for a successful
@@ -47,27 +60,71 @@ Q.5 The level of noise, n, within measurements of execution time will
 
     The intuitive relationship is that as the about of noise increases, the number of measurements required for a successful attack also increases. One can imagine that as the noise increases, the timings will
     appear more random. To help filter this randomness we can increase the number of measurements.  If we take the average across all samples, it should make any apparent differences in data more observable.
+    In general, the number of measurements required increases with the square of the noise level. [1]
 
 Q.6 Let n denote the number of simulated clock cycles required to execute a
     Montgomery multiplication on the attack target.  Estimate the value of
     n (as accurately as you can) and explain how you did so.
 
-    To calculate execution time for Montgomery multiplication, I recorded the time for every Montgomery multiplication in the entire attack and calculated the average.
-    The timings was taken under a condition with only minimal other processes running at the same time.
+    Practice Approach:
+        To calculate execution time for Montgomery multiplication, I recorded the time for every Montgomery multiplication in the entire attack and calculated the average.
+        The timings was taken under a condition with only minimal other processes running at the same time.
 
-    Time to complete Montgomery multiplication (Personal Computer):
-        With reduction      : 0.00004757343018893579s
-        Without reduction   : 0.00004385970949741723s
-        Average             : 0.00004571656984317651s
+        Time to complete Montgomery multiplication (Personal Computer):
+            With reduction      : 0.00004757343018893579s
+            Without reduction   : 0.00004385970949741723s
+            Average             : 0.00004571656984317651s
 
-    Calculation = clock cycles per second * number of seconds for Montgomery multiplication
+        As expected there is a time difference between with and without reduction. It is 8.5% longer when a reduction occurs.
 
-                      CPU GHz       Cycles per s           n
-    Linux Lab Machine:  3.5GHz  =   3,500,000,000   =
-    Personal Computer:  4GHz    =   4,000,000,000   =
-      PC With Red    :                              =    190294
-      PC Without Red :                              =    175439
-      PC Average     :                              =    182866
+        Calculation = clock cycles per second * number of seconds for Montgomery multiplication
+        Simulated Processor = 64-bit Intel Core2
+                            = The attack target CPU is "used by several front-line e-commerce servers", therefore I will assume it's a Intel Xeon (targeted at the non-consumer workstation, server, and embedded system markets) processor.
+                              For this calculation, I will select the Wolfdale E3110 (a rebranded version of the Intel's mainstream Core 2 Duo E7000/E8000) with a 3 Ghz processor.
+
+                               CPU GHz     Cycles per s           n
+        Personal Computer   :  4GHz    =   4,000,000,000   =
+          PC With Red       :                              =    190294
+          PC Without Red    :                              =    175439
+          PC Average        :                              =    182866
+
+        Simulated Processor :  3GHz    =   3,000,000,000   =
+          SP With Red       :                              =    142721
+          SP Without Red    :                              =    131579
+          SP Average        :                              =    137150
+
+                n_Personal_Computer = 0.75 * n_Simulated_Processor
+
+         Answer: n = 137150
+
+    Theoretical Approach:
+        The attack target uses a 64 bit processor and works on 1024 bit numbers (bit size of N).
+        The maximum size number that can be held in an array is 64 bits.
+        Therefore a 1024 bit numbers requires s = 16 number of arrays.
+
+        According to Koc et al. (Analysing and Comparing Montgomery Multiplication
+        Algorithms), the CIOS method takes:
+
+            2s^2 + s            Multiplications     3 cycles
+            4s^2 + 4s + 2       Additions           1 cycle
+
+        n = 1 *    Additions    +  3 * Multiplications =
+        n = 1 * (4s^2 + 4s + 2) +  3 * (2s^2 + s)      = 10s^2 + 5s + 2 = 2642 cycles
+
+        n = 2642
 
 
-     Answer: n = 182866
+     Reason for different values of n:
+        Not having exactly the same implementation of CIOS Montgomery Multiplication.
+        Made assumption as to the number of clock cycles used by the simulated CPU.
+
+     For the above reason, my final answer is the 'Theoretical Approach' where:
+
+     n = 2642
+
+
+
+
+
+References:
+ [1] http://courses.csail.mit.edu/6.857/2006/handouts/TimingAttacks.pdf
