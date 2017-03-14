@@ -39,6 +39,27 @@ def mpz_getlimbn(x, i):
 # Montgomery multiplication
 # r = a.b mod N
 # Returns result and boolean to indicate whether a reduction was required
+# def mont_mul(x, y, N, omega):
+#     r = 0
+#     for i in range(int(mpz_size(N))):
+#         r = (r + ((y >> (i * BITS)) & (b - 1)) * x + ((((r & (b - 1)) + ((y >> (i * BITS)) & (b - 1)) * (x & (b - 1))) * omega) & (b - 1)) * N) >> BITS
+#     if r > N:
+#         return r - N, True
+#     else:
+#         return r, False
+
+def MonPro(a, b, N, omega, rho) :
+    t = a * b
+    u = (t + (t * omega % rho) * N) / rho
+    Red = False
+    # Check if reduction is needed
+    if u >= N :
+        u = u - N
+        Red = True
+    return (u, Red)
+
+
+
 def mont_mul(x, y, N, omega):
     r = 0
     for i in range(0, int(mpz_size(N))):
@@ -78,9 +99,11 @@ def mont_L2R_exp(b, e, N, rho_2, omega):
 
 # Check if reduction is required for next bit (0 or 1) in private exponent
 def next_bit_check(b, N, omega, c):
+
+    # When the bit is zero
     c0, _      = mont_mul(c, c, N, omega)            # Check reduction if 0
     _ , flag0  = mont_mul(c0, c0, N, omega)          # Check reduction if 0
-
+    # When the bit is one
     c1, _      = mont_mul(c0, b, N, omega)           # Check reduction if 1
     _ , flag1  = mont_mul(c1, c1, N, omega)          # Check reduction if 1
     return (flag0, flag1, c0, c1)

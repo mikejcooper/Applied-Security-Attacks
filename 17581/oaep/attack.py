@@ -296,9 +296,9 @@ if ( __name__ == "__main__" ) :
     end = time.time()
 
     print "Hashed Label:     " + i2osp(lHash)
-    print "Message:          " + i2osp(Message)
-    print "Oracle uses:      " + str(ORACLE_QUERIES)
     print "Decryption time:  %ds" % (end - start)
+    print "\nMessage:          " + i2osp(Message)
+    print "Oracle uses:      " + str(ORACLE_QUERIES)
 
 
 

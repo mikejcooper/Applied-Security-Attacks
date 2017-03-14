@@ -12,21 +12,21 @@ def Interact( fault, m ) :
     target_in.flush()
     # From Oracle: 1-block AES ciphertext (represented as an octet string)
     c = target_out.readline().strip()
-
-    x = [int(c[i:i + 2], 16) for i in range(0, len(c) - 1, 2)]
-
     globals().update(ORACLE_QUERIES = ORACLE_QUERIES + 1)
-    return c, x
+    return c
 
 
 
 def playground():
     #        r, f, p, i, j
-    fault = ""
+    fault = "8,3,0,0,0"
+    # fault = ""
     m = ByteToHex(AES_1_Block("hello world"))
-    c = Interact(fault, m)[0]
+    c = Interact(fault, m)
 
     k = 'CB6818217807A5E2599A286817349133'
+
+    Print_SQ_Matrix(State_Matrix4x4(c), 'hex')
 
     print AES_check(m,c,k)
 

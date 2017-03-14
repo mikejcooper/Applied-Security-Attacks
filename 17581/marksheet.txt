@@ -16,7 +16,7 @@
 So that we can calibrate and improve the assignment in the future, give us
 a rough idea how long (in hours) you spent on it *in total*:
 
-effort : [...] hours
+effort : [35] hours
 
 -------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ by the assignment description of course).  Let us know what third-party
 source code or resources you used (if any) so it's clear what's your work 
 and what isn't:
 
-[...]
+[Referenced in code and question where appropriate.]
 
 -------------------------------------------------------------------------------
 
@@ -41,19 +41,19 @@ outside this list can warrant an increase/decrease in marks, with examples
 including hard to quantify features such as the efficiency, robustness, 
 generality, realism, or style of a solution.
 
-[?] Stage 1 : an attack based on error messages
+[X] Stage 1 : an attack based on error messages
               - correct target material                              ( 40%)
               - solution quality wrt. efficiency, robustness etc.    ( 30%)
               - analysis questions                                   ( 30%)
 
-              target material : [...]
+              target material : [BB0F1213E082E6A528424173507AB7B360E3BDBBA9A81083B25974A039]
 
-[?] Stage 2 : an attack based on execution time
+[X] Stage 2 : an attack based on execution time
               - correct target material                              ( 40%)
               - solution quality wrt. efficiency, robustness etc.    ( 30%)
               - analysis questions                                   ( 30%)
 
-              target material : [...]
+              target material : [A7482536D8F7C91B]
 
 [?] Stage 3 : an attack based on an injected fault
               - correct target material                              ( 40%)
@@ -80,6 +80,9 @@ Any other documentation, notes or comments that you think are important or
 might be easy to overlook (e.g., a subtle issue or technique in associated
 source code) should go here:
 
-[...]
+Time:
+    [A] Error testing allows saleability for harder problems. It dynamically increases sample sizes if decryption fails.
+    I calculate the certainty of each bit choice based on a Margin value and revert to different position in decryption
+    based on when/where these areas of uncertainty occur.
 
 -------------------------------------------------------------------------------

@@ -14,3 +14,54 @@ Q.4 For side-channel attacks, the number of acquisitions required can be
 Q.5 How do the properties of different AES round functions influence the
     effectiveness of your attack?  More specifically, imagine SubBytes is
     removed: does this help or hinder your attack?
+
+
+
+(8,0)
+(8,1)
+(8,2)
+(8,3)
+CB  F7  C5  2F
+2E  69  C9  93
+58  BD  C1  EE
+76  2C  F8  58
+(9,0)
+7E  2B  E6  BF
+31  A1  2B  E1
+CE  1B  52  92
+C3  5A  38  26
+(9,1)
+0C  2B  E6  BF
+31  A1  2B  D7
+CE  1B  AA  92
+C3  42  38  26
+(9,2)
+E6  2B  E6  BF
+31  A1  2B  6B
+CE  1B  DA  92
+C3  E3  38  26
+(9,3)
+B1  2B  E6  BF
+31  A1  2B  15
+CE  1B  40  92
+C3  2E  38  26
+(10,0)
+44  2B  E6  BF
+31  A1  2B  E1
+CE  1B  52  92
+C3  5A  38  26
+(10,1)
+11  2B  E6  BF
+31  A1  2B  E1
+CE  1B  52  92
+C3  5A  38  26
+(10,2)
+86  2B  E6  BF
+31  A1  2B  E1
+CE  1B  52  92
+C3  5A  38  26
+(10,3)
+D7  2B  E6  BF
+31  A1  2B  E1
+CE  1B  52  92
+C3  5A  38  26

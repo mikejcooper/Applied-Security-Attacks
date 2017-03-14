@@ -166,6 +166,7 @@ def gf28_mul(a, b):
             t ^= a
     return t
 
+
 # Inject a fault and build hypotheses from this fault via step 1
 def generate_hypotheses(x, c, delta):
     _, x_p = interact(c, "8,1,0,0,0")
@@ -173,14 +174,17 @@ def generate_hypotheses(x, c, delta):
     valid = [[[] for i in range(256)] for i in range(16)]
 
     # Perform the exhaustive search on the each of the equations
+    # For each byte, ki, in key k
     for i in range(16):
         if i in [0, 2, 9, 11]:
             div = 1
         elif i in [7, 5, 14, 12]:
             div = 2
-        else:
+        elif i in [1, 3, 4, 6, 8, 10, 13, 14, 15]:
             div = 0
+        # For each potential value of key ki in range [0...255]
         for k in range(256):
+            # x = Correct output, x_p = Fault output
             d_i = inv_s[x[i] ^ k] ^ inv_s[x_p[i] ^ k]
             for cnt, d in enumerate(delta[div]):
                 if d_i == d:
@@ -192,8 +196,12 @@ def generate_hypotheses(x, c, delta):
     for cnt, b in enumerate([[0, 13, 10, 7], [4, 1, 14, 11], [8, 5, 2, 15], [12, 9, 6, 3]]):
         for i in range(256):
             if valid[b[0]][i] and valid[b[1]][i] and valid[b[2]][i] and valid[b[3]][i]:
-                hypotheses[cnt] += [[key0, key1, key2, key3] for key0 in valid[b[0]][i] for key1 in valid[b[1]][i] for key2 in valid[b[2]][i] for key3 in valid[b[3]][i]]
-
+                # Remove repeated keys in each list and add to hypothesis
+                hypotheses[cnt] += [[key0, key1, key2, key3]
+                                    for key0 in valid[b[0]][i]
+                                    for key1 in valid[b[1]][i]
+                                    for key2 in valid[b[2]][i]
+                                    for key3 in valid[b[3]][i]]
     return hypotheses
 
 target = subprocess.Popen(args   = os.path.realpath(sys.argv[ 1 ]),
