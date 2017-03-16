@@ -3,9 +3,10 @@ import random
 import time
 from montgomery import *
 from error import Errors
+from scipy.stats import ttest_ind, ttest_ind_from_stats, stats
 
 ORACLE_QUERIES = 0
-SAMPLE_SIZE = 6000
+SAMPLE_SIZE = 5000
 
 # SET AT RUNTIME:
 BITS = 0  # X-Bit: mpz_size(N) * 4
@@ -59,10 +60,9 @@ def Create_Test():
 def get_avg(values):
     return sum(values) // len(values)
 
-def get_var(values):
-    avg = get_avg(values)
-    return sum([(xi - avg) ** 2 for xi in values]) / len(values)
-
+# Perform independent statistical test
+def get_difference(X, Y):
+    return 1 - stats.ttest_ind(X, Y)[1]
 
 
 # Reference: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=E82828DA2379558D3EC51809A2E4DFDC?doi=10.1.1.28.2496&rep=rep1&type=pdf
@@ -82,11 +82,7 @@ def Attack ( N , errors ) :
         is0, not0, is1, not1, c0, c1 = [], [], [], [], [], []
         for i, c in enumerate(c_mont):
             # Check if reduction is required for next bit (0 or 1) - Attack the square
-            flag0, flag1, ci_0, ci_1 = next_bit_check( c , N, omega, c_decryption[i] )
-            # if i % 2 == 0 :
-            #     flag0, flag1, ci_0, ci_1 = True, False, 16, 5
-            # else:
-            #     flag0, flag1, ci_0, ci_1 = False, True, 16, 5
+            flag0, flag1, ci_0, ci_1 = next_bit_check( c , N, omega, c_decryption[i])
 
             c0.append(ci_0)
             c1.append(ci_1)
@@ -107,8 +103,9 @@ def Attack ( N , errors ) :
 
         # [A] Error Testing
         if errors.ErrorIncreaseSample:                                      # Too many uncertain bits in attack, double sample size
-            print "Uncertainty too high. Increasing Sample Size and Resampling..."
-            globals().update(SAMPLE_SIZE =+ SAMPLE_SIZE)
+            print "Uncertainty too high. Increasing Sample Size..."
+            globals().update(SAMPLE_SIZE = SAMPLE_SIZE + SAMPLE_SIZE/2)
+            print SAMPLE_SIZE
         if errors.ErrorResample:                                            # Too many uncertain bits in attack, resample with new ciphertexts
             print "Uncertainty too high. Resampling..."
             d, n = 1, 0
@@ -119,11 +116,11 @@ def Attack ( N , errors ) :
             d = d ^ 1                                                       # Invert uncertain bit
             c_decryption = errors.CipherithRound[LastCertainBit]            # Revert ciphertexts to that rounds ciphertexts
             print "Uncertain about current bit: " + str(n) + \
-                  ". Reverting to previous uncertainty at bit: " + str(LastCertainBit)
+                  ". Reverting to previous uncertainty at bit: " + str(LastCertainBit + 1)
             n = LastCertainBit                                              # Revert round number
         else :
             if errors.ErrorUncertain:                                       # Not certain about current bit, diff1 - diff0 is small
-                print "Uncertain about current bit: " + str(n)
+                print "Uncertain about current bit: " + str(n + 1)
             # Statistical prediction
             if diff0 > diff1:
                 d <<= 1                                                     # ith bit, di = 0

@@ -79,24 +79,33 @@ class Errors:
                 self.BitCertainty[ithBit] = False
                 self.CipherithRound[ithBit] = c1
 
+    # If there are two uncertain bits that follow an uncertain bit
     def Revert(self, ithBit):
-        for i in range(ithBit - 4, ithBit-1):
+        uncertain_bits = []
+        for i in range(ithBit, ithBit - 10, -1):
+            if i < 0 :
+                break
             if self.BitCertainty[i] is False :
-                self.BitCertainty[i] = True
-                self.RevertToBitX = i
+                uncertain_bits.append(i)
+            if len(uncertain_bits) > 3:
+                for bit in uncertain_bits :
+                    self.BitCertainty[bit] = True
+                self.RevertToBitX = uncertain_bits[-1]
                 return True
         return False
 
     def Resample(self):
-        if self.ErrorCount > 4:
+        if self.ErrorCount > 6:
             self.ErrorCount = 0
             self.Resampled = True
+            self.ResetBitCertainty()
             return True
         else :
             return False
 
     def IncreaseSample(self):
         if self.ErrorResample and self.Resampled :
+            self.ResetBitCertainty()
             return True
         else :
             return False
@@ -106,3 +115,7 @@ class Errors:
             return True
         else:
             return False
+
+    def ResetBitCertainty(self):
+        for i in range(0, len(self.BitCertainty)):
+            self.BitCertainty[i] = True

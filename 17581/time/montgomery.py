@@ -48,15 +48,15 @@ def mpz_getlimbn(x, i):
 #     else:
 #         return r, False
 
-def MonPro(a, b, N, omega, rho) :
-    t = a * b
-    u = (t + (t * omega % rho) * N) / rho
-    Red = False
-    # Check if reduction is needed
-    if u >= N :
-        u = u - N
-        Red = True
-    return (u, Red)
+# def mont_mul(a, b, N, omega, rho) :
+#     t = a * b
+#     u = (t + (t * omega % rho) * N) / rho
+#     Red = False
+#     # Check if reduction is needed
+#     if u >= N :
+#         u = u - N
+#         Red = True
+#     return (u, Red)
 
 
 
