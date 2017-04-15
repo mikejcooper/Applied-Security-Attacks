@@ -19,8 +19,8 @@ def Interact( fault, m ) :
 
 def playground():
     #        r, f, p, i, j
-    fault = "8,3,0,0,0"
-    # fault = ""
+    # fault = "8,3,0,0,0"
+    fault = ""
     m = ByteToHex(AES_1_Block("hello world"))
     c = Interact(fault, m)
 
@@ -29,6 +29,9 @@ def playground():
     Print_SQ_Matrix(State_Matrix4x4(c), 'hex')
 
     print AES_check(m,c,k)
+
+
+
 
 
 

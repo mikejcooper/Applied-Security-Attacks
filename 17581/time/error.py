@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from montgomery import mpz_size
 
 '''

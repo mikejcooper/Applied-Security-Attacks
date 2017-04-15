@@ -1,6 +1,7 @@
+#!/usr/bin/env python
+
 import sys, subprocess
 import random
-import time
 from montgomery import *
 from error import Errors
 from scipy.stats import ttest_ind, ttest_ind_from_stats, stats

@@ -1,16 +1,19 @@
-import random, sys, subprocess, os, itertools, Crypto.Cipher.AES as AES, struct
+import random, sys, subprocess
+from Utils import *
 
-# Helper function for interacting with the system
-# Converts an integer into a hexadecimal string, does any necessary padding
-# and returns the result as a string.
-def interact(c, f):
-    target_in.write(f + "\n")
-    target_in.write("%X\n" % c)
+ORACLE_QUERIES = 0
+
+# Expected label l and ciphertext c as octet strings
+def interact( m, fault ) :
+    # Send (fault, message) to attack target.
+    target_in.write( "%s\n" % ( fault ) )
+    target_in.write( "%s\n" % ( i2osp(m) ) )
     target_in.flush()
+    # From Oracle: 1-block AES ciphertext (represented as an octet string)
+    c = target_out.readline().strip()
+    globals().update(ORACLE_QUERIES = ORACLE_QUERIES + 1)
+    return c
 
-    m = target_out.readline()
-    x = [int(m[i:i+2], 16) for i in range(0, len(m) - 1, 2)]
-    return m, x
 
 # S-box
 s = [
@@ -52,7 +55,7 @@ inv_s = [
     0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D
 ]
 
-# Round constant
+# Round constant, Rijndael Rcon
 r_con = [
     0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
     0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39,
@@ -72,8 +75,7 @@ r_con = [
     0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
 ]
 
-# The first array is delta, the second is gf28_mul(delta, 2) and the third is gf28_mul(delta, 3)
-# for all delta in {0..255}
+# Delta, gf28_mul(delta, 2), gf28_mul(delta, 3)   for all delta in {0..255}
 delta = [
             [
                 0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,
@@ -135,68 +137,65 @@ delta = [
 def inv_key(k):
     for i in range(10, 0, -1):
         k[4:] = [
-                k[0] ^ k[4],  k[1] ^ k[5],  k[2]  ^ k[6],  k[3]  ^ k[7],
-                k[4] ^ k[8],  k[5] ^ k[9],  k[6]  ^ k[10], k[7]  ^ k[11],
-                k[8] ^ k[12], k[9] ^ k[13], k[10] ^ k[14], k[11] ^ k[15]
-            ]
-        k[:4] = [s[k[13]] ^ k[0] ^ r_con[i], s[k[14]] ^ k[1], s[k[15]] ^ k[2], s[k[12]] ^ k[3]]
+                    k[0] ^ k[4],  k[1] ^ k[5],  k[2]  ^ k[6],  k[3]  ^ k[7],
+                    k[4] ^ k[8],  k[5] ^ k[9],  k[6]  ^ k[10], k[7]  ^ k[11],
+                    k[8] ^ k[12], k[9] ^ k[13], k[10] ^ k[14], k[11] ^ k[15]
+                ]
 
+        k[1:4] = [ s[k[14]] ^ k[1], s[k[15]] ^ k[2], s[k[12]] ^ k[3] ]
+
+        k[0]   =   s[k[13]] ^ k[0] ^ r_con[i]
     return k
 
-# During computation I build hypotheses up in arrays corresponding to their related equations.
-# This function reorders these arrays back to the original key.
-def rebuild_key(k):
-    return [
-                k[0][0], k[1][1], k[2][2], k[3][3],
-                k[1][0], k[2][1], k[3][2], k[0][3],
-                k[2][0], k[3][1], k[0][2], k[1][3],
-                k[3][0], k[0][1], k[1][2], k[2][3],
-            ]
-
-# Multiply a(x) by x
-def gf28_mulx(a):
-    return (((a << 1) ^ 0x1B) if a & 0x80 else (a << 1)) & 0xFF
-
-# Multiply a(x) by b(x)
-def gf28_mul(a, b):
-    t = 0
-    for i in range(7, -1, -1):
-        t = gf28_mulx(t)
-        if (b >> i) & 1:
-            t ^= a
-    return t
+# 2D array to correctly ordered 1D array
+def reconstruct_key(k):
+    return \
+    [
+        k[0][0], k[1][1], k[2][2], k[3][3],
+        k[1][0], k[2][1], k[3][2], k[0][3],
+        k[2][0], k[3][1], k[0][2], k[1][3],
+        k[3][0], k[0][1], k[1][2], k[2][3],
+    ]
 
 
 # Inject a fault and build hypotheses from this fault via step 1
-def generate_hypotheses(x, c, delta):
-    _, x_p = interact(c, "8,1,0,0,0")
+def generate_hypotheses(m, c):
+    # m = Correct output, m_f = Fault output
+    m = HexToByteList( m )
+    # Inject fault at input to the eighth round
+    m_f = HexToByteList( interact(c, "8,1,0,0,0") )
 
+    # Create 256 (hypothesis values) by 16 (bytes) list
     valid = [[[] for i in range(256)] for i in range(16)]
 
     # Perform the exhaustive search on the each of the equations
     # For each byte, ki, in key k
     for i in range(16):
         if i in [0, 2, 9, 11]:
-            div = 1
+            d_mult = 2
         elif i in [7, 5, 14, 12]:
-            div = 2
-        elif i in [1, 3, 4, 6, 8, 10, 13, 14, 15]:
-            div = 0
+            d_mult = 3
+        elif i in [1, 3, 4, 6, 8, 10, 13, 15]:
+            d_mult = 1
         # For each potential value of key ki in range [0...255]
         for k in range(256):
-            # x = Correct output, x_p = Fault output
-            d_i = inv_s[x[i] ^ k] ^ inv_s[x_p[i] ^ k]
-            for cnt, d in enumerate(delta[div]):
-                if d_i == d:
-                    valid[i][cnt].append(k)
+            # 1/2/3 * delta = S^-1 ( m_i ^ k ) ^ S^-1 ( m_f_i ^ k )      -   Equation from paper.
+            delt_i = inv_s[ m[i] ^ k ] ^ inv_s[ m_f[i] ^ k ]
+            for j, delt in enumerate(delta[d_mult - 1]):
+                # Check: 1/2/3 * delta ==  delt == delt_i
+                # If d_i matches index of delta matrix, then result is valid. Append to list of hypothesises.
+                if delt_i == delt:
+                    valid[i][j].append(k)
+
 
     hypotheses = [[] for i in range(4)]
 
     # Only add the hypotheses for each delta if there is one in all of the four equations for a given delta
     for cnt, b in enumerate([[0, 13, 10, 7], [4, 1, 14, 11], [8, 5, 2, 15], [12, 9, 6, 3]]):
         for i in range(256):
+            # If a valid solution (key) exists for each of the 4 equations.
             if valid[b[0]][i] and valid[b[1]][i] and valid[b[2]][i] and valid[b[3]][i]:
-                # Remove repeated keys in each list and add to hypothesis
+                # Obtain unique solution (filter duplicates) for each equation.
                 hypotheses[cnt] += [[key0, key1, key2, key3]
                                     for key0 in valid[b[0]][i]
                                     for key1 in valid[b[1]][i]
@@ -204,29 +203,60 @@ def generate_hypotheses(x, c, delta):
                                     for key3 in valid[b[3]][i]]
     return hypotheses
 
-target = subprocess.Popen(args   = os.path.realpath(sys.argv[ 1 ]),
-                          stdout = subprocess.PIPE,
-                          stdin  = subprocess.PIPE)
 
-target_out = target.stdout
-target_in  = target.stdin
 
-c = random.getrandbits(128)
+def attack(c, m):
 
-m, x = interact(c, "")
+    # Create first hypothesis
+    hypotheses = generate_hypotheses(m, c)
 
-hypotheses = generate_hypotheses(x, c, delta)
-# Intersect with anothe fault until we only have one hypothesis for each byte
-while max([len(h) for h in hypotheses]) > 1:
-    hypotheses = [[keys for keys in bytes1 if keys in bytes2] for bytes1, bytes2 in zip(hypotheses, generate_hypotheses(x, c, delta))]
+    # Repeat with another fault until we only have one hypothesis for each byte - Two fault ciphertext attack
+    while max([len(h) for h in hypotheses]) > 1:
+        # Add key_set if key_set is in byte_current and byte_previous. Repeat for each of the 4 bytes.
+        hypotheses = [[key_set for key_set in byte_previous if key_set in byte_current] for
+                      byte_previous, byte_current in zip(hypotheses, generate_hypotheses(m, c))]
 
-k = "".join([("%X" % byte).zfill(2) for byte in inv_key(rebuild_key([bytes[0] for bytes in hypotheses]))])
+    # Extract first list from byte - Termination of while loop means there will only be 1 list in each byte hypothesis.
+    hypotheses = [bytes[0] for bytes in hypotheses]
 
-print "c = " + m
-print "k = " + k
-print "m = " + ("%X" % c).zfill(32)
+    k_bytes = inv_key(reconstruct_key(hypotheses))
 
-print "Key recovered: " + k
+    k = ByteListToHexString(k_bytes)
 
-print "Message encrypted by device: " + m
-print "Message encrypted by derived key: " + AES.new(k.decode("hex")).encrypt(("%X" % c).zfill(32).decode("hex")).encode("hex").upper()
+    return k
+
+
+
+
+if ( __name__ == "__main__" ) :
+    # Produce a sub-process representing the attack target.
+    target = subprocess.Popen( args   = sys.argv[ 1 ],
+                             stdout = subprocess.PIPE,
+                             stdin  = subprocess.PIPE )
+
+    # Construct handles to attack target standard input and output.
+    target_out = target.stdout
+    target_in  = target.stdin
+
+    # Generate random 128-bit ciphertext
+    c = random.getrandbits(128)
+
+    # Retrieve real m from oracle with no fault injection
+    m = interact(c, "")
+
+    # Attack using fault, retrieve k
+    k = attack(c, m)
+
+    # Check if key recovery is successful
+    if AES_check(toHex(c),m, k):
+        print "Key recovered: "
+        print " c = " + toHex(c).strip()
+        print " m = " + m + "\n"
+        print " Key recovered: " + k
+        print " Oracle uses:   " + str(ORACLE_QUERIES)
+
+    else:
+        print "Error: Key NOT recovered"
+
+
+

@@ -3,6 +3,36 @@ Q.1 As a security consultant, you have been working on a prototype of the
     make any alteration necessary (in software or hardware) to prevent the
     attack.  Explain the options available, and which one you would
     recommend.
+
+    Option 1 - Masking:
+        The goal of masking is to make the algorithmic value independent of the processed value.
+
+        Masking works by the multiplying the input message with a random transformation T (e.g. A hashed value). And after the algorithm
+        has finished, multiplying the result with the inverse of that random transformation T^-1.
+        The intermediate values that are processed by the device are independent of the intermediate values used in the algorithm.
+        By introducing a different random value for each interaction, it prevents an attacker from entering a known input to the AES decryption function.
+        If the attacker cannot enter a known input, they cannot make use of the corresponding power consumption values.
+
+        - One practical example of Masking is to use short lived session keys based on a hash of an initial key.
+
+    Option 2 - Power Hiding:
+        The goal of hiding is to make the processed values independent of power consumption (PC), making PC appear either random or constant.
+
+        On method is decrease leakage: Randomise the execution of the algorithm. More specifically, one can introduce: Random delays, random operations & shuffling.
+        Another is to increase noise : Using different circuits where transition counts are fixed and do not depend on value of input data
+                                       e.g. Dual-Rail Pre-charge (DRP) Logic Style.
+
+
+    As the vendor is willing to make any alteration necessary to prevent attack, I would recommend option 2. However, I would make it clear that option 2
+    will incur additional hardware costs and performance concerns [1]. It directly addresses the power consumption by adding additional hardware, whereas option 1 is limited to a degree
+    it can only 'mask' the same effect.
+
+    [1] "If the processor is equipped with custom instructions for AES, then a protection level of four orders of magnitude is achievable.
+     But the performance penalty is rather high, so that it is probably not acceptable for all applications." [2]
+
+    [2] - https://pdfs.semanticscholar.org/4e1a/a1eac32351ca2053b7b088f8b70440ece814.pdf
+
+
 Q.2 The vendor of the attack target opts to replace the 8-bit Intel 8051
     micro-processor with a modern, 32-bit ARM Cortex-M0; they supplement it
     with hardware support for that allows single-cycle operations on 32
@@ -10,17 +40,94 @@ Q.2 The vendor of the attack target opts to replace the 8-bit Intel 8051
     encryption or decryption, but they *also* want to know if it might make
     the device more secure wrt.  DPA attacks: what is your assessment, and
     why ?
+
+    Increasing the microprocessor size from 8 to 32 bits means you will have fewer restraints on resources, particularly memory, and the width of registers
+    used for doing arithmetic and logical operations. Depending on the bus size of datapath, the number of S-boxes placed in the datapath can range from 1 for 8-bit
+    processor to 4 for 32-bit processor. The number of S-boxes placed in a system affects performance, area, and power consumption of the AES engine significantly
+    since it has the longest delay within the critical path, and it is the largest and power-dominant building block of AES hardware.
+
+    As stated in the question, it is reasonable to assume AES invocations dominate the computation it will perform for each interaction. Therefore the S-box computation
+    to produce the hamming weights will take will take more time (5 mins vs 5 hours). What makes this attack on a 32-bit system infeasible is that there are 2^40 keys
+    whereas for an 8 bit system there is only 11 on average. It would require access to a HPC facility to attack the device in reasonable time. There are attacks of this
+    nature on 32-bit micro-processors [1] and if an attacker had 'unlimited' access, the device is still susceptible to attack, however security is increased.
+
+
+
+    [1] http://www.geocities.ws/mike.tunstall/papers/THMWMM.pdf
+
+
+
 Q.3 DPA attacks work because statistics can (to some degree) remove the
     noise within power consumption traces.  Explain the concepts of signal,
     noise and signal-to-noise ratio, and the role each has in a DPA attack
     of this type.
+
+    Signal:
+        Define: An electric current or electromagnetic field used to convey data from one place to another.
+
+        Role in DPA: A power signal is the exploited metric used for statistical analysis in DPA.
+
+    Noise:
+        Define: Unwanted modifications that a signal may suffer during capture, storage, transmission, processing, or conversion.
+
+        Role in DPA: Additional data that occurs when reading the power signal in DPA. Noise doesn't help the attack,
+                     in fact signal noise underpins most countermeasures for DPA. The more noise that exists, the more
+                     traces that are needed to achieve statical significance and thus a successful attack
+
+    Signal-to-Noise ratio:
+        Define: A measure that compares the level of a desired signal to the level of background noise.
+                It is the ratio of signal power to the noise power, often expressed in decibels.
+
+        Role in DPA: The success rate of the DPA attacks is largely influenced by the Signal-to-Noise Ratio (SNR) of the power traces [1].
+                     Therefore the SNR is considered when determining the security requirements for a particular system.
+
+    Mathematical Relationships:
+
+                  |   EXPLOITED   |  |        NOT EXPLOITED          |
+
+        Power   = (    Signal     )   (Constants)   (  Noise                  )
+        P_total = ( P_op + P_data ) +  P_const   +  ( P_el.noise              )
+        P_total = ( P_exp         ) +  P_const   +  ( P_el.noise + P_sw.noise )
+        P_total = ( P_exp         ) +  P_const   +  ( P_noise                 )
+
+        SNR     = Var(P_exp) / Var(P_noise).
+
+        The relation between signal and noise is quadratic: if we double the noise, 4 times as many traces are needed.
+
+    [1] S. Mangard, E. Oswald, and T. Popp. Power analysis attacks - revealing the secrets of smart cards. Springer, 2007.
+
 Q.7 The power consumption traces you used in this attack are perfectly
     aligned.  What does "alignment" mean in this context, and how could
     misalignment occur in practice?  How could you alter your attack
     strategy to compensate for misalignment?
 
+    Misalignment occur in practice:
+        A device under attack could have counter measures that add dummy operations, trigger signals that activate the power
+        trace could start data collection at a different point relative to processing the data [1], or temperature variations
+        that slightly alter clock speeds could shift the position of critical sections of the power trace in time.
+
+    Altering the attack for misalignment:
+        Attempt to realign:
+            Method 1:
+                Take the max value of the whole trace and assume that the location of max power consumption is fairly characteristic
+                across all traces in a given set.
+            Method 2:
+                Align based on the max of the sensitive area that our attack is targeting.
+            Method 3:
+                Use 'FastDTW', a linear complexity variant of the dynamic time warping algorithm, for alignment. Dynamic time warping measures
+                the distance between two traces and produces a warp path that describes a nonlinear time matching of the two. We use this warp
+                path to align a pair of traces. By selecting one trace as a reference, we can thereby iterate this process to elastically align
+                an entire trace set. [2]
 
 
 
-Blinding the
-RSA moduli helps prevent side channel attacks such as the differential power analysis (DPA) attack and timing attacks that exploit the modular reduction modulo p and q.
+    [1] - Mangard, S., Oswald, E., and Popp, T. Power Analysis Attacks: Revealing the Secrets of Smart Cards, 1st ed. Springer, New York, 2007.
+    [2] - https://www.riscure.com/benzine/documents/elastic_ctrsa_final.pdf
+
+
+
+
+
+
+
+

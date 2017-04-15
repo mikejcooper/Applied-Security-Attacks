@@ -2,66 +2,148 @@ Q.1 Consider that instead of influencing data (e.g., the AES state), a
     fault might influence control-flow (e.g., a conditional statement)
     somehow during execution.  Stating any assumptions you make, give an
     alternative attack strategy based on this ability.
+
+    Plan:
+    -----------------------------------------------------------------------------
+    Should I expand on "alternative attack strategy"??
+
+    -----------------------------------------------------------------------------
+
+    If a fault influenced control flow in AES encryption, it's likely that the loop for
+    SubBytes, ShiftRows, MixColumns, and AddRound functions will be affected. If an attacker
+    could control the number of rounds performed by AES then the scheme becomes insecure. For example,
+
+        - If only 0 or 1 rounds -> trivial key recover attack
+        - If only 5 or 6 rounds -> Boomerang attack using differential cryptanalysis [1]
+
+    Another fault injection we could consider is to skip one of the trans-formations of the last round or
+    to execute the Mix-Columns transformation also during the last round. This uses control flow
+    i.e. skipping a conditional, to manipulate the AES state and the same retrieval technique
+    can be used -  exploiting the difference between correct and faulty ciphertexts.
+
+    [1] http://link.springer.com/chapter/10.1007/11506447_2
+
+
 Q.2 Outline the methods available for hardening this AES implementation
     against fault attacks; for each method, explain any assumptions you
     make and compare it with the others wrt.  metrics such as robustness,
     latency, and memory footprint.
+
+    1. Duplicate Encryption
+
+        Assumptions: Device has multiple cores - can run two programs in parallel
+
+        In a duplicated AES hardware implementation, both the data path and the
+        key path are duplicated so that two executions of the AES algorithm run in
+        parallel. We exploit this property to scramble the state bytes between the
+        two executions. Doing so, we ensure that a fault on one data path will likely
+        result in a fault on the other data path. The expected fault-propagation path
+        being modified, it is harder to mount an attack.
+
+            Robustness:
+                - Mounting successful fault attacks is much harder as Byte-Scramblings
+                  are applied at many AES function locations, including in the key schedule.
+                - Using this technique is 8 times more demanding than in the original attack. [2]
+
+            Latency:
+                - Overall encryption will take longer, more computation because of combining
+                  two executions paths.
+
+            Memory Footprint:
+               - If this technique was implemented on a single device running in parallel,
+                 it would require at least double the original memory footprint as well as
+                 require more computation to combine the two executions.
+
+    2. Active Protection
+
+        Assumptions: Access to sensors / Can manufacture board with sensors built-in
+
+        Additional sensors can be used to detect variations in voltage, frequency, light etc.
+
+            Robustness:
+                - Somewhat suspect. Perhaps a reason why this method is not completely robust is becuase
+                  when faults are 'injected', they are still within a normal range e.g. If there was a voltage
+                  sensor with a threshold of X and you then inject a fault by using a voltage injection of X-1,
+                  the sensor will not be triggered. However, you still know that something (different from the norm)
+                  will occur at that point.
+
+            Latency:
+                - Very small amount of latency. Should constantly monitor a particular metric - efficient.
+
+            Memory Footprint:
+               - Small addition - Code that monitors different metrics and triggers error if a threshold is reached.
+
+
+    3. Error-detection codes (EDCs)
+
+        Assumptions: None
+
+            Robustness:
+                - Use non-linear robust codes which provide for more uniform error- detection coverage. [3]
+                - In paper [3], the EDCs used enabled them to inject 30 billion different errors, with every one detected.
+
+            Latency:
+                - 25% [3]
+                - Latency overhead is mainly due to the code comparator
+                  Can be reduced by moving comparator out of the critical path
+
+            Memory Footprint:
+               - Small addition - mainly due to the code comparators.
+
+
+
+    Comparing Methods: 1 & 2
+            Robustness:
+                - Method 1 appears more robust. Method 2 seems to be an incomplete solution as explained previously
+
+            Latency:
+                - Method 2 will introduce much less latency.
+
+            Memory Footprint:
+               - Method 2 will also have a much smaller memory footprint.
+
+
+    [2] http://joye.site88.net/papers/JMR07aesdup.pdf
+    [3] https://pdfs.semanticscholar.org/a028/1802267a80f5d545e095380da77ab338bbf8.pdf
+
 Q.4 For side-channel attacks, the number of acquisitions required can be
     used as a measure of efficiency.  Outline the equivalent measure for
     fault attacks, and explain whether (and why) you think a side-channel
     attack on AES could be as efficient as a fault attack based on these
     measures.
+
+    An equivalent measure for fault attacks would be the number of key hypothesis.
+
+    During the attack we base our knowledge on that a fault has been induced in the
+    first byte of the state matrix. However, we can note that the analysis returns a
+    very small number of hypotheses. We can, therefore, conduct 16 independent analyses
+    under the assumption that a fault is induced each of the 16 bytes of of the state at
+    the beginning of the eighth round. An attacker would expect this to produce
+    16 × 2^8 = 2^12 valid key hypotheses, which is still a trivial exhaustive search.
+
+    From the above explanation, I conclude that a side-channel attack on AES is more often
+    than not less efficient than a fault attack based on these measures.
+
+
 Q.5 How do the properties of different AES round functions influence the
     effectiveness of your attack?  More specifically, imagine SubBytes is
     removed: does this help or hinder your attack?
 
 
+    - If Shift Row is removed, then attacker can treat input block
+    (128 bits) as 4 independent 32 bits block. Hence, attacker
+    can attack these 4 blocks one by one to recover key.
 
-(8,0)
-(8,1)
-(8,2)
-(8,3)
-CB  F7  C5  2F
-2E  69  C9  93
-58  BD  C1  EE
-76  2C  F8  58
-(9,0)
-7E  2B  E6  BF
-31  A1  2B  E1
-CE  1B  52  92
-C3  5A  38  26
-(9,1)
-0C  2B  E6  BF
-31  A1  2B  D7
-CE  1B  AA  92
-C3  42  38  26
-(9,2)
-E6  2B  E6  BF
-31  A1  2B  6B
-CE  1B  DA  92
-C3  E3  38  26
-(9,3)
-B1  2B  E6  BF
-31  A1  2B  15
-CE  1B  40  92
-C3  2E  38  26
-(10,0)
-44  2B  E6  BF
-31  A1  2B  E1
-CE  1B  52  92
-C3  5A  38  26
-(10,1)
-11  2B  E6  BF
-31  A1  2B  E1
-CE  1B  52  92
-C3  5A  38  26
-(10,2)
-86  2B  E6  BF
-31  A1  2B  E1
-CE  1B  52  92
-C3  5A  38  26
-(10,3)
-D7  2B  E6  BF
-31  A1  2B  E1
-CE  1B  52  92
-C3  5A  38  26
+    - If MixColumn is removed, then attacker can treat input block (128 bits) as 16
+    independent 8bits block. Hence, attacker can attack these 16 blocks separately.
+
+    - If SubByte is removed, then AES is no longer non-linear, it's  is a linear combination
+    of shift row, mix column and addroundkey.
+
+    The removal of the SubByte round will help the attack as there will be no need to undo
+    the permutation operation using the inverse SubBytes lookup table. As this attack has a
+    high memory complexity due to storing all key hypothesis, not storing the lookup table can
+    only be beneficial.
+
+
+

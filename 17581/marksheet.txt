@@ -80,9 +80,20 @@ Any other documentation, notes or comments that you think are important or
 might be easy to overlook (e.g., a subtle issue or technique in associated
 source code) should go here:
 
+To run all stages, use command in questions e.g. "bash$ ./attack ${USER}.D ${USER}.conf"
+    However you may need to change permissions of the executable.
+      - "bash$ chmod +x ./attack"
+    IF this does not work: 
+      - "bash$ python attack.py ./${USER}.D ${USER}.conf"
+
 Time:
     [A] Error testing allows saleability for harder problems. It dynamically increases sample sizes if decryption fails.
     I calculate the certainty of each bit choice based on a Margin value and revert to different position in decryption
     based on when/where these areas of uncertainty occur.
+
+    I have calculated that the majority of time is spent doing montgomery multiplications. I perform 4 multiplications 
+    for each ciphertext for each bit. So approx: 4 * 6000 * 64 = 1,536,000. I am unsure why the code takes over 150s to run 
+    when other implementations I have seen in C & Java with a similar number of multiplications take a faction of the time. 
+    The only conclusion I can find is that python does not deal with 'Big Integers' in an efficent way.  
 
 -------------------------------------------------------------------------------

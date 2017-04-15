@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import hashlib
 import sys, subprocess
 from math import log,ceil

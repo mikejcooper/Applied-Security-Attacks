@@ -3,7 +3,6 @@ import Crypto.Cipher.AES as AES
 import binascii
 import math
 
-
 def AES_check( m, c, k ) :
     c1 = AES.new( HexToByte(k) ).encrypt( HexToByte(m) )
     if HexToByte(c) == HexToByte(c1):

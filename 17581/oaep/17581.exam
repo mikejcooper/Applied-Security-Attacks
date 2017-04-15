@@ -93,8 +93,14 @@ Q.2 To prevent the attack, the vendor suggests altering the software: the
 Q.6 RSA has a homomorphic property: explain what this means, and how it
     relates to this attack.
 
-    This means that mathematical operations to be performed on encrypted data without compromising the encryption.
+    This means that mathematical operations can performed on the ciphertext, which when decrypted, match the result of the same operations performed on the plaintext. 
+    The homomorphic property also implies malleability. This means, if you have some ciphertext, then you can create a different ciphertext with a related plaintext.
     In this attack it means that the ciphertext c can be modified by a multiple f_i, and it holds that the corresponding plaintext will be f_i · m.
+    
+    As explained in Q.1., this is essential to the attack:
+
+        The attacker chooses a multiple f_i and sends c_new = f_i^e · c (mod N) to the oracle.
+        Given the homomorphic properties of RSA, this ciphertext corresponds to the plaintext f_i · m, and provides a mathematical relationship between c (before call to oracle) and m (value returned by oracle).
 
 Q.8 Imagine you are a security consultant, employed by the device vendor.
     The vendor has heard that exponent and message blinding can be used to

@@ -1,5 +1,6 @@
+#!/usr/bin/env python
+
 import math
-# from attack import BITS, b, mask
 
 # SET AT RUNTIME:
 import time
