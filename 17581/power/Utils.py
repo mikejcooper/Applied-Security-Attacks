@@ -1,8 +1,8 @@
 import hashlib
-import CryptoPlus as AES
 import binascii
 import math
 
+from Crypto.Cipher import AES
 
 
 def AES_check( m, c, k ) :
@@ -110,3 +110,30 @@ def gf28_mul(a, b):
         if (b >> i) & 1:
             t ^= a
     return t
+
+
+
+# Utils for ATTACK
+
+
+def getTrace(_traces) :
+    __traces = _traces.split(',')[1:]
+    traces = []
+    for i in __traces:
+        traces.append(int(i))
+    return traces
+
+
+def printComparison(newByte, i):
+    str1 = ("27406f62c3db0c5e010bb95b4aacbd85" + "27406f62c3db0c5e010bb95b4aacbd85")
+    ind = i * 2
+    str_i = str1[ind:ind + 2]
+
+    scale = 16  ## equals to hexadecimal
+    num_of_bits = 8
+    print "True:  Byte " + str(i) + " : " + bin(int(str_i, scale))[2:].zfill(num_of_bits) + " : " + str_i
+    print "Guess: Byte " + str(i) + " : " + bin(int(newByte, scale))[2:].zfill(num_of_bits) + " : " + newByte
+
+
+def getByte(ciphertext, index) :
+    return int(ciphertext[index*2 : index*2 + 2], 16)

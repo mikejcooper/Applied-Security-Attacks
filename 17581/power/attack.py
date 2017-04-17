@@ -1,10 +1,11 @@
+from Utils import *
+
 # import hashlib
 # import sys, subprocess
 # import sys
 # import binascii
 #
 #
-# from Utils import *
 #
 # ORACLE_QUERIES = 0
 #
@@ -146,12 +147,11 @@ try:
 except ImportError :
     crypto_available = False
 
-
 OCTET_SIZE = 32
-BYTES = 32
+BYTES = 16
 SAMPLES = 150
 BITSIZE = 128
-KEYS = 256
+KEY_RANGE = 256
 TRACES = 1500
 
 # Rijndael S-box
@@ -180,67 +180,68 @@ sbox =  [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
         0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0,
         0x54, 0xbb, 0x16]
 
-def SubBytes(x) :
-    return sbox[x]
+inv_s = [
+    0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E, 0x81, 0xF3, 0xD7, 0xFB,
+    0x7C, 0xE3, 0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87, 0x34, 0x8E, 0x43, 0x44, 0xC4, 0xDE, 0xE9, 0xCB,
+    0x54, 0x7B, 0x94, 0x32, 0xA6, 0xC2, 0x23, 0x3D, 0xEE, 0x4C, 0x95, 0x0B, 0x42, 0xFA, 0xC3, 0x4E,
+    0x08, 0x2E, 0xA1, 0x66, 0x28, 0xD9, 0x24, 0xB2, 0x76, 0x5B, 0xA2, 0x49, 0x6D, 0x8B, 0xD1, 0x25,
+    0x72, 0xF8, 0xF6, 0x64, 0x86, 0x68, 0x98, 0x16, 0xD4, 0xA4, 0x5C, 0xCC, 0x5D, 0x65, 0xB6, 0x92,
+    0x6C, 0x70, 0x48, 0x50, 0xFD, 0xED, 0xB9, 0xDA, 0x5E, 0x15, 0x46, 0x57, 0xA7, 0x8D, 0x9D, 0x84,
+    0x90, 0xD8, 0xAB, 0x00, 0x8C, 0xBC, 0xD3, 0x0A, 0xF7, 0xE4, 0x58, 0x05, 0xB8, 0xB3, 0x45, 0x06,
+    0xD0, 0x2C, 0x1E, 0x8F, 0xCA, 0x3F, 0x0F, 0x02, 0xC1, 0xAF, 0xBD, 0x03, 0x01, 0x13, 0x8A, 0x6B,
+    0x3A, 0x91, 0x11, 0x41, 0x4F, 0x67, 0xDC, 0xEA, 0x97, 0xF2, 0xCF, 0xCE, 0xF0, 0xB4, 0xE6, 0x73,
+    0x96, 0xAC, 0x74, 0x22, 0xE7, 0xAD, 0x35, 0x85, 0xE2, 0xF9, 0x37, 0xE8, 0x1C, 0x75, 0xDF, 0x6E,
+    0x47, 0xF1, 0x1A, 0x71, 0x1D, 0x29, 0xC5, 0x89, 0x6F, 0xB7, 0x62, 0x0E, 0xAA, 0x18, 0xBE, 0x1B,
+    0xFC, 0x56, 0x3E, 0x4B, 0xC6, 0xD2, 0x79, 0x20, 0x9A, 0xDB, 0xC0, 0xFE, 0x78, 0xCD, 0x5A, 0xF4,
+    0x1F, 0xDD, 0xA8, 0x33, 0x88, 0x07, 0xC7, 0x31, 0xB1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xEC, 0x5F,
+    0x60, 0x51, 0x7F, 0xA9, 0x19, 0xB5, 0x4A, 0x0D, 0x2D, 0xE5, 0x7A, 0x9F, 0x93, 0xC9, 0x9C, 0xEF,
+    0xA0, 0xE0, 0x3B, 0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61,
+    0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D
+]
 
-def interactD( plaintext ) :
+def SubBytes(x) :
+    return inv_s[x]
+
+def interact( ciphertext ) :
   j = "00"
   i = "00000000000000000000000000000000"
   k = '27406f62c3db0c5e010bb95b4aacbd8527406f62c3db0c5e010bb95b4aacbd85'
 
-  target_in.write("%s\n" % (j))
-  target_in.write("%s\n" % (i))
-  # Send plaintext to attack target.
-  target_in.write(("%s\n" % (plaintext)).zfill(OCTET_SIZE))
-
-  target_in.write("%s\n" % (k))
-
-
+  target_in.write("%s\n" % j)
+  target_in.write("%s\n" % i)
+  target_in.write("%s\n" % i2osp(ciphertext))
+  target_in.write("%s\n" % k)
   target_in.flush()
-
 
   # Receive power consumption trace and ciphertext from attack target.
   trace      = target_out.readline().strip()
-  ciphertext = int(target_out.readline().strip(), 16)
+  plaintext = int(target_out.readline().strip(), 16)
 
-  traces = getPowerTrace(trace)
+  traces = getTrace(trace)
 
-  return (traces, ciphertext)
+  return (traces, plaintext)
 
-def getPowerTrace(trace) :
-    traces_l = trace.split(',')
+def generateSamples() :
+    ciphertexts = []; traces = [];
+    for i in range(0, SAMPLES):
+        # generate random ciphertext
+        ciphertext = "%X" % random.getrandbits(BITSIZE)
+        _traces, plaintext = interact(ciphertext)
+        ciphertexts.append(ciphertext)
+        traces.append(_traces)
 
-    length = int(traces_l[0])
-
-    traces = []
-    tadd = traces.append
-
-    for i in range(1, TRACES+1) :
-        tadd(int(traces_l[i]))
-
-    return traces
-
-# return new sample with trace and its ciphertext
-def getNew() :
-    # generate random plaintext
-    plaintext = "%X" % random.getrandbits(BITSIZE)
-    traces, ciphertext = interactD(plaintext)
-    # return fixed number of traces
-    return plaintext, traces
-
-def getByte(number, index) :
-    ByteString = (number).zfill(OCTET_SIZE)
-    byte = ByteString[index*2 : (index+1)*2]
-    return int(byte, 16)
+    return ciphertexts, traces
 
 # Get hypothetical intermediate values
-def getV(byte, plaintexts) :
-    V = zeros((SAMPLES, KEYS), uint8)
+def getV(byte_i, ciphertexts) :
+    V = zeros((len(ciphertexts), KEY_RANGE), uint8)
 
-    for i, p in enumerate(plaintexts) :
-        p_i = getByte(p, byte)
-        for k in range(KEYS) :
-            V[i][k] = SubBytes(p_i ^ k)
+    # For current byte, enumerate over each ciphertext and compute each possible key value
+    for i, c in enumerate(ciphertexts) :
+        c_i = getByte(c, byte_i)
+        for k in range(KEY_RANGE) :
+            # Perform undo of last step.
+            V[i][k] = SubBytes(c_i ^ k)
 
     return V
 
@@ -249,135 +250,59 @@ def hammingWeight(v) :
     return bin(v).count("1")
 
 def getHammingWeightMatrix(V) :
-    HW = zeros((SAMPLES, KEYS), uint8)
+    HW = zeros((len(V), KEY_RANGE), uint8)
 
-    for i in range(SAMPLES) :
-        for j in range(KEYS) :
+    for i in range(len(V)) :
+        for j in range(KEY_RANGE) :
             HW[i][j] = hammingWeight(V[i][j])
 
     return HW
 
-def attackByte(byte, samples) :
-    (plaintexts, traces) = samples
-    V = getV(byte, plaintexts)
+def attackByte(byte_i, ciphertexts, traces) :
+    # Get hypothetical intermediate values
+    V = getV(byte_i, ciphertexts)
     # Calculate hypothetical power consumption
     H = getHammingWeightMatrix(V)
 
-    R = zeros((KEYS, TRACES), float32)
+    R = zeros((KEY_RANGE, TRACES), float32)
 
     # Transpose H and T, each column becomes a row. Easier to access rows.
     H_t = H.transpose()
-    T_t = traces.transpose()
+    T_t = matrix(traces).transpose()
 
-    # Compute the correlation between each column of H and each column of T.
-    for i in range(KEYS) :
-        for j in range(TRACES) :
+    # Compute the correlation between each coxlumn of H and each column of T.
+    for i in range(0, KEY_RANGE) :
+        for j in range(0, TRACES) :
             # Correlation matrix is symmetric, [0][1] = [1][0]
             R[i][j] = corrcoef(H_t[i], T_t[j])[0][1]
 
     return R
 
 def attack() :
-    #Generate samples
-    print "Generating %d samples ..." % SAMPLES
-    print "Power trace: %d data points." % TRACES
-    plaintexts = []
-    traces = []
-    for i in range(SAMPLES):
-        (p, t) = getNew()
-        plaintexts.append(p)
-        traces.append(t)
-
-    # Measured power traces
-    T = matrix(traces)
-
-    samples = (plaintexts, T)
-
+    # Generate samples
+    print "Generating %d samples, each with %d Power Traces data points." % (SAMPLES , TRACES)
+    ciphertexts, traces = generateSamples()
 
     key = ""
 
     print "Start guessing key ..."
-    for i in range(BYTES):
-        R = attackByte(i, samples)
-        max_tr = R[0].max()
+
+    for i in range(0, BYTES):
+        R = attackByte(i, ciphertexts, traces)
+        max_coeff = R[0].max()
         keyByte = 0
-        # Find the value in (0, 255) that has the highest correlation coefficient.
-        for k in range(1,KEYS):
-            temp = R[k].max()
-            if temp > max_tr :
-                max_tr = temp
+        # Find the value in (0, 255) with the highest correlation coefficient.
+        for k in range(1,KEY_RANGE):
+            current_coeff = R[k].max()
+            # If current coefficient value is larger (current k is more likely)
+            if current_coeff > max_coeff :
+                max_coeff = current_coeff
                 keyByte = k
         newByte = ("%X" % keyByte).zfill(2)
         key += newByte
-        print "here"
-        printComparison(newByte, i)
+        printComparison(newByte,i)
+    return key
 
-
-
-        # sys.stdout.write("Byte {0:<7}: {1:<51}\n".format(i, ord(newByte)))
-
-    # Check if the recovered key is valid.
-    if crypto_available :
-        result = testKey(key)
-    else :
-        result = testKey_2(key)
-    if result == 1:
-        print "Key :"+key
-        print int(key, 16)
-        return 1
-    return 0
-
-def printComparison(newByte, i):
-    str1 = ("27406f62c3db0c5e010bb95b4aacbd8527406f62c3db0c5e010bb95b4aacbd85")
-    ind = (BYTES - i) * 2
-    str_i = str1[ind - 2:ind]
-
-    scale = 16  ## equals to hexadecimal
-    num_of_bits = 8
-    print "True:  Byte " + str(i) + " : " + bin(int(str_i, scale))[2:].zfill(num_of_bits) + " : " + str_i
-    print "Guess: Byte " + str(i) + " : " + bin(int(newByte, scale))[2:].zfill(num_of_bits) + " : " + newByte
-
-
-# Test if recovered key is valid
-def getHexList(x) :
-    l = []
-    for i in range(BYTES) :
-        byte_i = getByte(x, i)
-        l.append(byte_i)
-    return l
-
-def getHexString(x) :
-    string = ""
-    for i in x:
-        string += ("%X" % i).zfill(2)
-    return string
-
-def testKey(key):
-    key = getHexList(key)
-    key = pack(16*"B", *key)
-
-    enc = AES.new(key)
-
-    p = "%X" % random.getrandbits(BITSIZE)
-    plain = getHexList(p)
-    plain = pack(16*"B", *plain)
-
-    _, cipher_1 = interactD(p)
-
-    c = enc.encrypt(plain)
-    c = unpack(16*"B", c)
-    c = getHexString(c)
-    cipher_2 = int(c, 16)
-
-    if cipher_1 == cipher_2:
-        return 1
-    return 0
-
-def testKey_2(key):
-    recovered_key = "61A4C140DD7409B8066A36F92AEF097A"
-    if key == recovered_key :
-        return 1
-    return 0
 
 if ( __name__ == "__main__" ) :
     # Produce a sub-process representing the attack target.
@@ -389,13 +314,17 @@ if ( __name__ == "__main__" ) :
     target_out = target.stdout
     target_in  = target.stdin
 
-
-
     # Execute a function representing the attacker.
-    while True:
-        if attack() == 1:
-            break
-        else :
-            print "Restart attack ..."
-            SAMPLES += 50
-            TRACES += 500
+    key = attack()
+
+    print "\nGuess: key: " + key
+    print "True : Key: " + "27406f62c3db0c5e010bb95b4aacbd85"
+
+
+
+
+
+
+
+
+
