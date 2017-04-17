@@ -1,3 +1,9 @@
+import subprocess
+
+import sys
+from numpy import matrix, corrcoef, float32, uint8
+from numpy.ma import zeros
+
 from Utils import *
 
 # import hashlib
@@ -131,28 +137,13 @@ from Utils import *
 #
 
 
-import sys, subprocess, random
-
-import binascii
-from numpy import zeros
-from numpy import matrix
-from numpy import uint8
-from numpy import float32
-from numpy import corrcoef
-from struct import pack
-from struct import unpack
-try:
-    from Crypto.Cipher import AES
-    crypto_available = True
-except ImportError :
-    crypto_available = False
-
+TWEAK = "00000000000000000000000000000000"
 OCTET_SIZE = 32
 BYTES = 16
 SAMPLES = 150
 CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
-TRACE_NUM = 1500
+TRACE_NUM = 2000
 
 # Rijndael S-box
 sbox =  [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
@@ -202,16 +193,14 @@ inv_s = [
 def SubBytes(x) :
     return sbox[x]
 
-
 # def interact( plaintext ) :
 #   # Send plaintext to attack target.
-#
 #   target_in.write( ("%s\n" % ( plaintext )).zfill(OCTET_SIZE) ) ; target_in.flush()
 #
 #   # Receive power consumption trace and ciphertext from attack target.
 #   trace      = target_out.readline().strip()
 #   ciphertext = int(target_out.readline().strip(), 16)
-#   #
+#
 #   traces = getPowerTrace(trace)
 #
 #   return (traces, ciphertext)
@@ -224,19 +213,32 @@ def SubBytes(x) :
 #     traces = []
 #     tadd = traces.append
 #
-#     for i in range(1, TRACES+1) :
+#     for i in range(1, TRACE_NUM+1) :
 #         tadd(int(traces_l[i]))
 #
 #     return traces
 
-def interact( ciphertext ) :
-  j = "00"
-  i = "00000000000000000000000000000000"
-  k = '27406f62c3db0c5e010bb95b4aacbd8527406f62c3db0c5e010bb95b4aacbd85'
+def generateSamples(key) :
+    ciphertexts = []; traces = [];
+    for i in range(0, SAMPLES):
+        # generate random ciphertext
+        # ciphertext = "%X" % random.getrandbits(CIPHERTEXTSIZE)
+        ciphertext = CIPHERTEXTS[i]
+        _traces, plaintext = interact(ciphertext, key)
+        ciphertexts.append(ciphertext)
+        traces.append(_traces)
+
+    return ciphertexts, traces
+
+def interact( ciphertext, _j ) :
+  j = _j
+  i = TWEAK
+  k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
+  c = "A99CE4A0687CE8E8D1140F2EC21345EB"
 
   target_in.write("%s\n" % j)
-  target_in.write("%s\n" % i)
-  target_in.write("%s\n" % i2osp(ciphertext))
+  target_in.write("%s\n" % ciphertext)
+  target_in.write("%s\n" % c)
   target_in.write("%s\n" % k)
   target_in.flush()
 
@@ -248,17 +250,6 @@ def interact( ciphertext ) :
 
   return (traces, plaintext)
 
-def generateSamples() :
-    ciphertexts = []; traces = [];
-    for i in range(0, SAMPLES):
-        # generate random ciphertext
-        # ciphertext = "%X" % random.getrandbits(CIPHERTEXTSIZE)
-        ciphertext = CIPHERTEXTS[i]
-        _traces, plaintext = interact(ciphertext)
-        ciphertexts.append(ciphertext)
-        traces.append(_traces)
-
-    return ciphertexts, traces
 
 # Get hypothetical intermediate values
 def getIntermediateValues(byte_i, ciphertexts) :
@@ -267,7 +258,7 @@ def getIntermediateValues(byte_i, ciphertexts) :
     for i, c in enumerate(ciphertexts) :
         c_i = getByte(c, byte_i)
         for k in range(KEY_RANGE) :
-            # Perform undo of last step.
+            # Perform undo Enc last step.
             V[i][k] = SubBytes(c_i ^ k)
 
     return V
@@ -277,12 +268,12 @@ def hammingWeight(v) :
     return bin(v).count("1")
 
 def getHammingWeightMatrix(V) :
-    HW = zeros((len(V), KEY_RANGE), uint8)
+    H = zeros((len(V), KEY_RANGE), uint8)
     for i in range(len(V)) :
         for j in range(KEY_RANGE) :
-            HW[i][j] = hammingWeight(V[i][j])
+            H[i][j] = hammingWeight(V[i][j])
 
-    return HW
+    return H
 
 def attackByte(byte_i, ciphertexts, traces) :
     # Get hypothetical intermediate values
@@ -299,13 +290,12 @@ def attackByte(byte_i, ciphertexts, traces) :
         for j in range(0, TRACE_NUM) :
             # Correlation matrix
             CC[i][j] = corrcoef( PC_h[i], PC_a[j] )[0][1]
-
     return CC
 
-def attack() :
+def attack(key_num) :
     # Generate samples
     print "Generating %d samples..." % SAMPLES
-    ciphertexts, traces = generateSamples()
+    ciphertexts, traces = generateSamples(key_num)
 
     print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
 
@@ -324,7 +314,7 @@ def attack() :
                 keyByte = k
         newByte = ("%X" % keyByte).zfill(2)
         key += newByte
-        printComparison(newByte,i)
+        printComparison(newByte,i, key_num)
     return key
 
 
@@ -339,15 +329,25 @@ if ( __name__ == "__main__" ) :
     target_in  = target.stdin
 
     # Execute a function representing the attacker.
-    key = attack()
+    # Attack key 2
+    key2 = attack("0")
+    # Attack key 1
+    key1 = attack("0")
 
-    print "\nGuess: key: " + key
-    print "True : Key: " + "27406f62c3db0c5e010bb95b4aacbd85"
+    print "\nGuess: key: " + key1 + key2
+    print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
 
 
 
 
+
+# Byte 0      : 61
+# Byte 1      : A4
+# Byte 2      : C1
+# Byte 3      : 40
+
+    # recovered_key = "61A4C140DD7409B8066A36F92AEF097A"
 
 
 

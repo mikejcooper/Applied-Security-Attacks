@@ -124,8 +124,11 @@ def getTrace(_traces) :
     return traces
 
 
-def printComparison(newByte, i):
-    str1 = ("27406f62c3db0c5e010bb95b4aacbd85" + "27406f62c3db0c5e010bb95b4aacbd85")
+def printComparison(newByte, i, key):
+    if key == "0":
+        str1 = "1BEE5A32595F3F3EA365A590028B7017"
+    else:
+        str1 = "5B6BA73EB81D4840B21AE1DB10F61B8C"
     ind = i * 2
     str_i = str1[ind:ind + 2]
 
