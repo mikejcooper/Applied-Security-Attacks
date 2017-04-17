@@ -150,9 +150,9 @@ except ImportError :
 OCTET_SIZE = 32
 BYTES = 16
 SAMPLES = 150
-BITSIZE = 128
+CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
-TRACES = 1500
+TRACE_NUM = 1500
 
 # Rijndael S-box
 sbox =  [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
@@ -200,7 +200,34 @@ inv_s = [
 ]
 
 def SubBytes(x) :
-    return inv_s[x]
+    return sbox[x]
+
+
+# def interact( plaintext ) :
+#   # Send plaintext to attack target.
+#
+#   target_in.write( ("%s\n" % ( plaintext )).zfill(OCTET_SIZE) ) ; target_in.flush()
+#
+#   # Receive power consumption trace and ciphertext from attack target.
+#   trace      = target_out.readline().strip()
+#   ciphertext = int(target_out.readline().strip(), 16)
+#   #
+#   traces = getPowerTrace(trace)
+#
+#   return (traces, ciphertext)
+#
+# def getPowerTrace(trace) :
+#     traces_l = trace.split(',')
+#
+#     length = int(traces_l[0])
+#
+#     traces = []
+#     tadd = traces.append
+#
+#     for i in range(1, TRACES+1) :
+#         tadd(int(traces_l[i]))
+#
+#     return traces
 
 def interact( ciphertext ) :
   j = "00"
@@ -225,7 +252,8 @@ def generateSamples() :
     ciphertexts = []; traces = [];
     for i in range(0, SAMPLES):
         # generate random ciphertext
-        ciphertext = "%X" % random.getrandbits(BITSIZE)
+        # ciphertext = "%X" % random.getrandbits(CIPHERTEXTSIZE)
+        ciphertext = CIPHERTEXTS[i]
         _traces, plaintext = interact(ciphertext)
         ciphertexts.append(ciphertext)
         traces.append(_traces)
@@ -233,9 +261,8 @@ def generateSamples() :
     return ciphertexts, traces
 
 # Get hypothetical intermediate values
-def getV(byte_i, ciphertexts) :
+def getIntermediateValues(byte_i, ciphertexts) :
     V = zeros((len(ciphertexts), KEY_RANGE), uint8)
-
     # For current byte, enumerate over each ciphertext and compute each possible key value
     for i, c in enumerate(ciphertexts) :
         c_i = getByte(c, byte_i)
@@ -251,7 +278,6 @@ def hammingWeight(v) :
 
 def getHammingWeightMatrix(V) :
     HW = zeros((len(V), KEY_RANGE), uint8)
-
     for i in range(len(V)) :
         for j in range(KEY_RANGE) :
             HW[i][j] = hammingWeight(V[i][j])
@@ -260,34 +286,32 @@ def getHammingWeightMatrix(V) :
 
 def attackByte(byte_i, ciphertexts, traces) :
     # Get hypothetical intermediate values
-    V = getV(byte_i, ciphertexts)
-    # Calculate hypothetical power consumption
-    H = getHammingWeightMatrix(V)
+    IV = getIntermediateValues(byte_i, ciphertexts)
+    # Power Consumption hypothetical
+    PC_h = getHammingWeightMatrix(IV).transpose()
+    # Power Consumption actual
+    PC_a = matrix(traces).transpose()
 
-    R = zeros((KEY_RANGE, TRACES), float32)
+    CC = zeros((KEY_RANGE, TRACE_NUM), float32)
 
-    # Transpose H and T, each column becomes a row. Easier to access rows.
-    H_t = H.transpose()
-    T_t = matrix(traces).transpose()
-
-    # Compute the correlation between each coxlumn of H and each column of T.
+    # Compute the correlation
     for i in range(0, KEY_RANGE) :
-        for j in range(0, TRACES) :
-            # Correlation matrix is symmetric, [0][1] = [1][0]
-            R[i][j] = corrcoef(H_t[i], T_t[j])[0][1]
+        for j in range(0, TRACE_NUM) :
+            # Correlation matrix
+            CC[i][j] = corrcoef( PC_h[i], PC_a[j] )[0][1]
 
-    return R
+    return CC
 
 def attack() :
     # Generate samples
-    print "Generating %d samples, each with %d Power Traces data points." % (SAMPLES , TRACES)
+    print "Generating %d samples..." % SAMPLES
     ciphertexts, traces = generateSamples()
 
+    print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
+
     key = ""
-
-    print "Start guessing key ..."
-
     for i in range(0, BYTES):
+        print "\n Attacking %d Byte..." %i
         R = attackByte(i, ciphertexts, traces)
         max_coeff = R[0].max()
         keyByte = 0
