@@ -1,7 +1,9 @@
 import hashlib
-import Crypto.Cipher.AES as AES
+import CryptoPlus as AES
 import binascii
 import math
+
+
 
 def AES_check( m, c, k ) :
     c1 = AES.new( HexToByte(k) ).encrypt( HexToByte(m) )
@@ -12,6 +14,9 @@ def AES_check( m, c, k ) :
 
 def AES_1_Block(text):
     return hashlib.md5(text).digest()
+
+def AES_2_Block(text):
+    return hashlib.sha256(text).digest()
 
 def AES_example():
     k = 'CB6818217807A5E2599A286817349133'
@@ -52,6 +57,13 @@ def ByteToHex(byte_string) :
         return binascii.hexlify(byte_string).zfill(32)
     else :
         return byte_string.zfill(32)
+
+# Convert Byte (4 bit) string to Hex (2 bit) string
+def ByteToHex256(byte_string):
+    if len(byte_string) <= 32:
+        return binascii.hexlify(byte_string).zfill(64)
+    else:
+        return byte_string.zfill(64)
 
 # Convert Hex (2 bit) string to Hex (4 bit) string
 def HexToByte(hex_string) :

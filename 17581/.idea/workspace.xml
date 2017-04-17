@@ -2,23 +2,131 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c7d14278-2ffc-423b-8f91-f392ea149bf9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/power/Utils.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/time/15784.D" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/time/15784.conf" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/17581.R" afterPath="$PROJECT_DIR$/power/17581.R" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/..new" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/Fortuna.new" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/OSRNG.new" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/webResources.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/.gitignore" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/AES.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/ARC2.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/Blowfish.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/CAST.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/DES.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/DES3.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/IDEA.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/RC5.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/blockcipher.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/pyDes.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/pyblowfish.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/pypresent.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/pyserpent.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_AES.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_Blowfish.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_DES.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_DES3.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_PRESENT.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_Rijndael.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_Serpent.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/python_Twofish.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/pytwofish.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Cipher/rijndael.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/RIPEMD.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pymd5.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pypbkdf2.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pyradiogatun.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pysha.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pysha224.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pysha256.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pysha384.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pysha512.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_MD5.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_PBKDF2.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_RadioGatun.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_SHA.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_SHA224.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_SHA256.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_SHA384.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_SHA512.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/python_whirlpool.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Hash/pywhirlpool.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/LICENSE" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Protocol.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/PublicKey.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/README" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Random/Fortuna.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Random/OSRNG.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Random/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/common.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_AES.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_ARC2.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_ARC4.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_Blowfish.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_CAST.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_DES.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_DES3.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_IDEA.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_RC5.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_XOR.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Cipher/test_python_AES.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/common.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/test_HMAC.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/test_MD2.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/test_MD4.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/test_MD5.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/test_RIPEMD.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/test_SHA.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Hash/test_SHA256.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/PublicKey/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/PublicKey/test_RSA.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/Fortuna/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/Fortuna/test_FortunaAccumulator.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/Fortuna/test_FortunaGenerator.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/Fortuna/test_SHAd256.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/OSRNG/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/OSRNG/test_fallback.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/OSRNG/test_generic.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/OSRNG/test_nt.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/OSRNG/test_posix.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/OSRNG/test_winrandom.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/test_random.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Random/test_rpoolcompat.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Util/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Util/test_number.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/Util/test_winrandom.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/SelfTest/st_common.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Util/RFC1751.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Util/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Util/number.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Util/padding.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Util/python_compat.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Util/randpool.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/Util/util.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/setup.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/src/CryptoPlus/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/src/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/test/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/test/test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/test/test_doctests.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CryptoPlus/testvectors.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Playground/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Playground/play.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/python-cryptoplus-master/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/python-cryptoplus-master/src/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/python-cryptoplus-master/test/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/17581.iml" afterPath="$PROJECT_DIR$/.idea/17581.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fault/17581.exam" afterPath="$PROJECT_DIR$/fault/17581.exam" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fault/Utils.py" afterPath="$PROJECT_DIR$/fault/Utils.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fault/attack.py" afterPath="$PROJECT_DIR$/fault/attack.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fault/template.py" afterPath="$PROJECT_DIR$/fault/template.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/marksheet.txt" afterPath="$PROJECT_DIR$/marksheet.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/oaep/17581.exam" afterPath="$PROJECT_DIR$/oaep/17581.exam" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/oaep/attack.py" afterPath="$PROJECT_DIR$/oaep/attack.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/17581.exam" afterPath="$PROJECT_DIR$/power/17581.exam" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lab-3/encrypt.py" afterPath="$PROJECT_DIR$/lab-3/encrypt.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/Utils.py" afterPath="$PROJECT_DIR$/power/Utils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/attack.py" afterPath="$PROJECT_DIR$/power/attack.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/time/attack.py" afterPath="$PROJECT_DIR$/time/attack.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/time/error.py" afterPath="$PROJECT_DIR$/time/error.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/time/montgomery.py" afterPath="$PROJECT_DIR$/time/montgomery.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,10 +140,11 @@
     <SUITE FILE_PATH="coverage/17581$Attack_oaep.coverage" NAME="Attack oaep Coverage Results" MODIFIED="1489701652445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
     <SUITE FILE_PATH="coverage/17581$Attack_fault_template.coverage" NAME="Attack fault template Coverage Results" MODIFIED="1492113546741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fault" />
     <SUITE FILE_PATH="coverage/17581$Unnamed.coverage" NAME="Attack Coverage Results" MODIFIED="1488295344543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
+    <SUITE FILE_PATH="coverage/17581$CryptoPlus.coverage" NAME="Playground Coverage Results" MODIFIED="1492353630828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Playground" />
     <SUITE FILE_PATH="coverage/17581$Attack_time.coverage" NAME="Attack time Coverage Results" MODIFIED="1489693928849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/time" />
     <SUITE FILE_PATH="coverage/17581$utils.coverage" NAME="utils Coverage Results" MODIFIED="1488139019721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
     <SUITE FILE_PATH="coverage/17581$Attack_Template.coverage" NAME="Attack Template Coverage Results" MODIFIED="1488811897359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
-    <SUITE FILE_PATH="coverage/17581$Attack_power.coverage" NAME="Attack power Coverage Results" MODIFIED="1492263272712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/power" />
+    <SUITE FILE_PATH="coverage/17581$Attack_power.coverage" NAME="Attack power Coverage Results" MODIFIED="1492415612818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/power" />
     <SUITE FILE_PATH="coverage/17581$Attack.coverage" NAME="Attack fault Coverage Results" MODIFIED="1489162044981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fault" />
   </component>
   <component name="CreatePatchCommitExecutor">
@@ -44,25 +153,23 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="attack.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/power/attack.py">
+      <file leaf-file-name="DES3.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/DES3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="354">
-              <caret line="52" column="0" lean-forward="true" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fault/Utils.py">
+      <file leaf-file-name="attack.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/power/attack.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-810">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="3" selection-end-column="11" />
+            <state relative-caret-position="2429">
+              <caret line="299" column="24" lean-forward="false" selection-start-line="299" selection-start-column="19" selection-end-line="299" selection-end-column="24" />
               <folding>
-                <element signature="e#0#14#0" expanded="true" />
+                <element signature="e#2916#2946#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -71,20 +178,80 @@
       <file leaf-file-name="Utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/power/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-918">
-              <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+            <state relative-caret-position="-468">
+              <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IDEA.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/IDEA.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pyDes.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/pyDes.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Blowfish.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/Blowfish.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="play.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Playground/play.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
               <folding>
-                <element signature="e#0#14#0" expanded="true" />
+                <element signature="e#0#17#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="17581.exam" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/power/17581.exam">
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Playground/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2232">
-              <caret line="124" column="75" lean-forward="false" selection-start-line="124" selection-start-column="75" selection-end-line="124" selection-end-column="75" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -101,11 +268,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>padding</find>
-      <find>os2i</find>
-      <find>ceil</find>
-      <find>i2ospi2osp</find>
-      <find>k</find>
       <find>Initialise_Input</find>
       <find>mont_init</find>
       <find>mont_mul</find>
@@ -131,6 +293,11 @@
       <find>delta</find>
       <find>gf28_mul</find>
       <find>s</find>
+      <find>util</find>
+      <find>first</find>
+      <find>corPar</find>
+      <find>keyHexes</find>
+      <find>BYTES</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -158,12 +325,14 @@
         <option value="$PROJECT_DIR$/oaep/17581.exam" />
         <option value="$PROJECT_DIR$/time/error.py" />
         <option value="$PROJECT_DIR$/fault/attack.py" />
-        <option value="$PROJECT_DIR$/fault/Utils.py" />
         <option value="$PROJECT_DIR$/fault/template.py" />
         <option value="$PROJECT_DIR$/fault/17581.exam" />
-        <option value="$PROJECT_DIR$/power/Utils.py" />
-        <option value="$PROJECT_DIR$/power/attack.py" />
         <option value="$PROJECT_DIR$/power/17581.exam" />
+        <option value="$PROJECT_DIR$/fault/Utils.py" />
+        <option value="$PROJECT_DIR$/power/Utils.py" />
+        <option value="$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Cipher/AES.py" />
+        <option value="$PROJECT_DIR$/Playground/play.py" />
+        <option value="$PROJECT_DIR$/power/attack.py" />
       </list>
     </option>
   </component>
@@ -174,6 +343,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="-1" />
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="1122" />
@@ -235,6 +405,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="17581" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="17581" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Playground" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scratches" />
@@ -250,9 +434,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Playground" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/Crypto" />
       <recent name="$PROJECT_DIR$/power" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/CryptoPlus" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/oaep" />
     </key>
   </component>
@@ -595,13 +784,32 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <list size="6">
+    <configuration default="false" name="Playground" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Playground" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="17581" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Playground/play.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <list size="7">
       <item index="0" class="java.lang.String" itemvalue="Python.Attack fault" />
       <item index="1" class="java.lang.String" itemvalue="Python.Attack power" />
       <item index="2" class="java.lang.String" itemvalue="Python.Attack fault template" />
       <item index="3" class="java.lang.String" itemvalue="Python.Attack oaep" />
       <item index="4" class="java.lang.String" itemvalue="Python.Attack time" />
-      <item index="5" class="java.lang.String" itemvalue="Python.utils" />
+      <item index="5" class="java.lang.String" itemvalue="Python.Playground" />
+      <item index="6" class="java.lang.String" itemvalue="Python.utils" />
     </list>
     <recent_temporary>
       <list size="1">
@@ -623,26 +831,26 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="1122" extended-state="6" />
+    <frame x="-1" y="23" width="1920" height="1122" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12291667" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30615786" sideWeight="0.29166666" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32953465" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33523268" sideWeight="0.7083333" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33523268" sideWeight="0.7083333" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2725546" sideWeight="0.49791667" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39221272" sideWeight="0.70885414" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39221272" sideWeight="0.70885414" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -687,13 +895,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/power/attack.py</url>
-          <line>28</line>
+          <line>31</line>
           <option name="timeStamp" value="125" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/power/attack.py</url>
-          <line>46</line>
-          <option name="timeStamp" value="131" />
+          <line>75</line>
+          <option name="timeStamp" value="134" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/power/attack.py</url>
+          <line>131</line>
+          <option name="timeStamp" value="149" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -703,228 +916,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="132" />
+      <option name="time" value="151" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/oaep/attack.c" />
-    <entry file="file://$PROJECT_DIR$/oaep/mont.py" />
-    <entry file="file://$PROJECT_DIR$/oaep/17581.exam">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="27" lean-forward="false" selection-start-line="3" selection-start-column="4" selection-end-line="4" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/17581.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fault/17581.exam">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="48" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="10" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/attack.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="50" column="54" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/time/17581.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/17581.exam">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="27" lean-forward="false" selection-start-line="3" selection-start-column="4" selection-end-line="4" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/17581.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fault/17581.exam">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="48" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="10" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/attack.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fault/17581.exam">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="48" lean-forward="true" selection-start-line="8" selection-start-column="4" selection-end-line="10" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/attack.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/attack.c" />
-    <entry file="file://$PROJECT_DIR$/oaep/mont.py" />
-    <entry file="file://$PROJECT_DIR$/oaep/utils.py" />
-    <entry file="file://$PROJECT_DIR$/oaep/attack_template.py" />
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/python_stubs/2098866188/__builtin__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="271" column="4" lean-forward="false" selection-start-line="271" selection-start-column="4" selection-end-line="271" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/test_oaep.py" />
-    <entry file="file://$PROJECT_DIR$/time/modmul.c" />
-    <entry file="file://$PROJECT_DIR$/time/Montgomery.c" />
-    <entry file="file://$PROJECT_DIR$/oaep/17581.D">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/17581.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/time/attack copy.py" />
-    <entry file="file://$PROJECT_DIR$/time/template.py" />
-    <entry file="file://$PROJECT_DIR$/time/17581.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oaep/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/power/17581.D">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fault/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/remote_sources/2098866188/-1227933812/crypto/Cipher/blockalgo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="243" column="0" lean-forward="false" selection-start-line="243" selection-start-column="0" selection-end-line="243" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/encodings/hex_codec.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lab-3/encrypt.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="11" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fault/template2.py" />
-    <entry file="file:///usr/lib/python2.7/subprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5606">
-          <caret line="1248" column="0" lean-forward="false" selection-start-line="1248" selection-start-column="0" selection-end-line="1248" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fault/template3.py" />
-    <entry file="file://$PROJECT_DIR$/marksheet.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1245">
-          <caret line="90" column="8" lean-forward="false" selection-start-line="90" selection-start-column="8" selection-end-line="90" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/time/error.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1515">
-          <caret line="101" column="23" lean-forward="false" selection-start-line="101" selection-start-column="23" selection-end-line="101" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/time/17581.exam">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="742">
-          <caret line="130" column="0" lean-forward="false" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/time/montgomery.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="2" selection-end-line="59" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/remote_sources/2098866188/-1227933812/crypto/Cipher/AES.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1395">
-          <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fault/attack.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="41" lean-forward="false" selection-start-line="26" selection-start-column="9" selection-end-line="26" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#22#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/oaep/attack.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1722">
@@ -965,51 +961,377 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/power/17581.exam">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2232">
+          <caret line="124" column="75" lean-forward="false" selection-start-line="124" selection-start-column="75" selection-end-line="124" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/xts-aes-256-master/LICENSE">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/xts-aes-256-master/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/xts-aes-256-master/aes_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/xts-aes-256-master/xts_aes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-468">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Cipher/AES.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="16" lean-forward="false" selection-start-line="0" selection-start-column="5" selection-end-line="0" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Cipher/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Cipher/blockcipher.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="22" column="11" lean-forward="false" selection-start-line="22" selection-start-column="7" selection-end-line="22" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Util/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/xts-aes-256-master/aes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1518">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/xts-aes-256-master/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fault/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/fault/template.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3030">
-          <caret line="212" column="109" lean-forward="false" selection-start-line="212" selection-start-column="109" selection-end-line="212" selection-end-column="109" />
+        <state relative-caret-position="267">
+          <caret line="241" column="31" lean-forward="true" selection-start-line="230" selection-start-column="0" selection-end-line="241" selection-end-column="31" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fault/Utils.py">
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/pymd5.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-810">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="3" selection-end-column="11" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/pysha.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/RIPEMD.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/pypbkdf2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/pysha224.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/pysha256.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/pysha384.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/pysha512.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/CryptoPlus/Hash/python_MD5.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/src/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/LICENSE">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-cryptoplus-master/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/build/lib/CryptoPlus/Hash/pymd5.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/AES.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/DES.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/RC5.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/ARC2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/CAST.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/DES3.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/IDEA.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/pyDes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoPlus/Cipher/Blowfish.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playground/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playground/play.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/power/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-918">
-          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-468">
+          <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/power/attack.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="52" column="0" lean-forward="true" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+        <state relative-caret-position="2429">
+          <caret line="299" column="24" lean-forward="false" selection-start-line="299" selection-start-column="19" selection-end-line="299" selection-end-column="24" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#2916#2946#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/power/17581.exam">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2232">
-          <caret line="124" column="75" lean-forward="false" selection-start-line="124" selection-start-column="75" selection-end-line="124" selection-end-column="75" />
-          <folding />
         </state>
       </provider>
     </entry>

@@ -1,7 +1,9 @@
 import hashlib
-import Crypto.Cipher.AES as AES
+import CryptoPlus as AES
 import binascii
 import math
+
+from CryptoPlus import SHA256
 
 
 def AES_check( m, c, k ) :
@@ -13,6 +15,7 @@ def AES_check( m, c, k ) :
 
 def AES_1_Block(text):
     return hashlib.md5(text).digest()
+
 
 def AES_example():
     k = 'CB6818217807A5E2599A286817349133'

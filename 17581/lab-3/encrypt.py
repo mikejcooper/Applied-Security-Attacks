@@ -1,5 +1,5 @@
 import struct
-import Crypto.Cipher.AES as AES
+import CryptoPlus as AES
 
 if ( __name__ == "__main__" ) :
   k = [ 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, \
