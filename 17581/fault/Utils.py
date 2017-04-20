@@ -15,7 +15,6 @@ def AES_check( m, c, k ) :
 def AES_1_Block(text):
     return hashlib.md5(text).digest()
 
-
 def AES_example():
     k = 'CB6818217807A5E2599A286817349133'
     k = AES_1_Block("This is my password")
@@ -23,7 +22,6 @@ def AES_example():
     c = AES.new(k).encrypt(m)
 
     print AES_check(m, c, k)
-
 
 # Convert 128 bit input into 4x4 State Matrix
 def State_Matrix4x4(i_128) :

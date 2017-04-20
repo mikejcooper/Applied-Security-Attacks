@@ -242,18 +242,7 @@ def attack(c, m):
     return k
 
 
-
-
-if ( __name__ == "__main__" ) :
-    # Produce a sub-process representing the attack target.
-    target = subprocess.Popen( args   = sys.argv[ 1 ],
-                             stdout = subprocess.PIPE,
-                             stdin  = subprocess.PIPE )
-
-    # Construct handles to attack target standard input and output.
-    target_out = target.stdout
-    target_in  = target.stdin
-
+def attackLoop():
     # Generate random 128-bit ciphertext
     c = random.getrandbits(128)
 
@@ -266,13 +255,30 @@ if ( __name__ == "__main__" ) :
     # Check if key recovery is successful
     if AES_check(toHex(c),m, k):
         print "Key recovery Successful:"
-        print " c = " + toHex(c).strip()
-        print " m = " + m + "\n"
+        print " m = " + m
+        print " c = " + toHex(c).strip() + "\n"
         print " Key recovered: " + k
         print " Oracle uses:   " + str(ORACLE_QUERIES)
 
     else:
         print "Error: Key NOT recovered"
+        print "Trying again..."
+        attack()
+
+
+
+
+if ( __name__ == "__main__" ) :
+    # Produce a sub-process representing the attack target.
+    target = subprocess.Popen( args   = sys.argv[ 1 ],
+                             stdout = subprocess.PIPE,
+                             stdin  = subprocess.PIPE )
+
+    # Construct handles to attack target standard input and output.
+    target_out = target.stdout
+    target_in  = target.stdin
+
+    attackLoop()
 
 
 
