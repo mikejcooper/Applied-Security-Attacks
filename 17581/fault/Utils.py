@@ -1,9 +1,8 @@
 import hashlib
-import CryptoPlus as AES
 import binascii
 import math
 
-from CryptoPlus import SHA256
+from Crypto.Cipher import AES
 
 
 def AES_check( m, c, k ) :
@@ -62,7 +61,7 @@ def HexToByte(hex_string) :
     if len(hex_string) <= 16:
         return hex_string.zfill(16)
     else :
-        return hex_string.strip().zfill(16).decode('hex').zfill(16)
+        return hex_string.strip().decode('hex').zfill(16)
 
 # Octal String to Integer
 def os2ip(X):

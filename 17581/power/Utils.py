@@ -2,6 +2,7 @@ import hashlib
 import binascii
 import math
 
+import numpy
 from Crypto.Cipher import AES
 
 
@@ -121,6 +122,14 @@ def getTrace(_traces) :
     traces = []
     for i in __traces:
         traces.append(int(i))
+    return (traces)
+
+def preprocessTrace(_traces):
+    avg = numpy.mean(_traces)
+    traces = []
+    for i in _traces:
+        if i > 2*avg:
+            traces.append(int(i))
     return traces
 
 

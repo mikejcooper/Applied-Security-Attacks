@@ -1,6 +1,10 @@
 import subprocess
 
 import sys
+
+import random
+
+import numpy
 from numpy import matrix, corrcoef, float32, uint8
 from numpy.ma import zeros
 
@@ -137,13 +141,12 @@ from Utils import *
 #
 
 
-TWEAK = "00000000000000000000000000000000"
 OCTET_SIZE = 32
 BYTES = 16
 SAMPLES = 150
 CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
-TRACE_NUM = 2000
+TRACE_NUM = 4000
 
 # Rijndael S-box
 sbox =  [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
@@ -218,26 +221,52 @@ def SubBytes(x) :
 #
 #     return traces
 
-def generateSamples(key) :
-    ciphertexts = []; traces = [];
-    for i in range(0, SAMPLES):
-        # generate random ciphertext
-        # ciphertext = "%X" % random.getrandbits(CIPHERTEXTSIZE)
-        ciphertext = CIPHERTEXTS[i]
-        _traces, plaintext = interact(ciphertext, key)
-        ciphertexts.append(ciphertext)
-        traces.append(_traces)
 
-    return ciphertexts, traces
 
-def interact( ciphertext, _j ) :
-  j = _j
-  i = TWEAK
+def generateRandomInputs() :
+    samples = []
+    # for i in range(0, SAMPLES):
+    #     # generate random ciphertext
+    #     sample = "%X" % random.getrandbits(CIPHERTEXTSIZE)
+    #     samples.append(sample.zfill(32))
+    samples = CIPHERTEXTS
+    return samples
+
+import pickle
+
+def interactAll(inputs):
+    traces = []; outputs = [];
+    # for i in inputs:
+    #     _traces, _output = interact(i)
+    #     traces.append(_traces)
+    #     outputs.append(_output)
+    # storeInfo(traces)
+    traces = getInfo()
+    return (outputs, traces)
+
+def storeInfo(info):
+    afile = open(r'C:\d.pkl', 'wb')
+    pickle.dump(info, afile)
+    afile.close()
+
+def getInfo():
+    # reload object from file
+    file2 = open(r'C:\d.pkl', 'rb')
+    new_d = pickle.load(file2)
+    file2.close()
+    # print dictionary object loaded from file
+    return new_d
+
+
+def interact( input ) :
+  j = "0"
+  i = "00000000000000000000000000000000"
+
   k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
   c = "A99CE4A0687CE8E8D1140F2EC21345EB"
 
   target_in.write("%s\n" % j)
-  target_in.write("%s\n" % ciphertext)
+  target_in.write("%s\n" % input)
   target_in.write("%s\n" % c)
   target_in.write("%s\n" % k)
   target_in.flush()
@@ -251,19 +280,25 @@ def interact( ciphertext, _j ) :
   return (traces, plaintext)
 
 
+
+
 # Get hypothetical intermediate values
-def getIntermediateValues(byte_i, ciphertexts) :
-    V = zeros((len(ciphertexts), KEY_RANGE), uint8)
+def getIntermediateValues(byte_i, plaintexts) :
+
+    V = zeros((len(plaintexts), KEY_RANGE), uint8)
     # For current byte, enumerate over each ciphertext and compute each possible key value
-    for i, c in enumerate(ciphertexts) :
-        c_i = getByte(c, byte_i)
+    for i, p in enumerate(plaintexts) :
+        p_i = getByte(p, byte_i)
+
+        global T
+
         for k in range(KEY_RANGE) :
-            # Perform undo Enc last step.
-            V[i][k] = SubBytes(c_i ^ k)
+            # Multi-bit (1 byte) DPA Attack
+            V[i][k] = SubBytes(p_i ^ k)
 
     return V
 
-# Calculate Hamming Weight
+# Calculate Hamming Weight - number of symbols different from the zero-symbol
 def hammingWeight(v) :
     return bin(v).count("1")
 
@@ -275,34 +310,49 @@ def getHammingWeightMatrix(V) :
 
     return H
 
-def attackByte(byte_i, ciphertexts, traces) :
+def attackByte(byte_i, plaintexts, traces) :
     # Get hypothetical intermediate values
-    IV = getIntermediateValues(byte_i, ciphertexts)
+    IV = getIntermediateValues(byte_i, plaintexts)
     # Power Consumption hypothetical
     PC_h = getHammingWeightMatrix(IV).transpose()
     # Power Consumption actual
     PC_a = matrix(traces).transpose()
 
+    len_PC_a = len(PC_a)
+
     CC = zeros((KEY_RANGE, TRACE_NUM), float32)
 
     # Compute the correlation
+    # For each hypothetical, For each actual
     for i in range(0, KEY_RANGE) :
         for j in range(0, TRACE_NUM) :
+            traceIndex = random.randint(0, len_PC_a - 1)
             # Correlation matrix
+            list1 = PC_h[i]
+            list2 = PC_a[j]
             CC[i][j] = corrcoef( PC_h[i], PC_a[j] )[0][1]
     return CC
 
-def attack(key_num) :
+
+def generateSamples():
     # Generate samples
     print "Generating %d samples..." % SAMPLES
-    ciphertexts, traces = generateSamples(key_num)
+
+    inputs = generateRandomInputs()
+    outputs, traces = interactAll(inputs)
+
+    return (inputs, outputs, traces)
+
+def attack1(inputs, outputs, traces) :
+    global TRACE_NUM
+
 
     print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
 
     key = ""
     for i in range(0, BYTES):
-        print "\n Attacking %d Byte..." %i
-        R = attackByte(i, ciphertexts, traces)
+        print "\n Attacking %d Byte..." % i
+        R = attackByte(i, inputs, traces)
         max_coeff = R[0].max()
         keyByte = 0
         # Find the value in (0, 255) with the highest correlation coefficient.
@@ -314,9 +364,32 @@ def attack(key_num) :
                 keyByte = k
         newByte = ("%X" % keyByte).zfill(2)
         key += newByte
-        printComparison(newByte,i, key_num)
+        printComparison(newByte,i, 0)
     return key
 
+
+def attack2(inputs, outputs, traces) :
+    print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
+
+    
+
+    key = ""
+    for i in range(0, BYTES):
+        print "\n Attacking %d Byte..." % i
+        R = attackByte(i, outputs, traces)
+        max_coeff = R[0].max()
+        keyByte = 0
+        # Find the value in (0, 255) with the highest correlation coefficient.
+        for k in range(1,KEY_RANGE):
+            current_coeff = R[k].max()
+            # If current coefficient value is larger (current k is more likely)
+            if current_coeff > max_coeff :
+                max_coeff = current_coeff
+                keyByte = k
+        newByte = ("%X" % keyByte).zfill(2)
+        key += newByte
+        printComparison(newByte,i, 255)
+    return key
 
 if ( __name__ == "__main__" ) :
     # Produce a sub-process representing the attack target.
@@ -328,11 +401,12 @@ if ( __name__ == "__main__" ) :
     target_out = target.stdout
     target_in  = target.stdin
 
+    inputs, outputs, traces = generateSamples()
     # Execute a function representing the attacker.
     # Attack key 2
-    key2 = attack("0")
+    key2 = attack1(inputs, outputs, traces)
     # Attack key 1
-    key1 = attack("0")
+    key1 = attack2(inputs, outputs, traces)
 
     print "\nGuess: key: " + key1 + key2
     print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"

@@ -1,0 +1,87 @@
+Q.1 Consider an example where N = 551, e = 5, d = 101 and c = 243.  Using
+    your own words, briefly explain and illustrate the working principle of
+    this attack (i.e., how and why it works).
+
+Answer:
+    N = 551
+    e = 5
+    d = 101
+    c = 243
+
+    k = ceil(log(256)N) = 2 , the byte length of N
+    B = 2^(8*(k-1)) = 2^8 = 256
+
+    The attacker chooses a multiple f and sends f to the Oracle. The oracle
+    computes f^e * c (mod N) and returns whether the result is "< B" or
+    ">= B". The previous ciphertext corresponds to the plaintext f*m.
+    ((f^e)*c)^d = f^(e*d) * c^d = f * m (mod N)
+    The oracle indicates if f*m is in the range [0, B) or (B, n) modulo N,
+    providing a mathematical relationship about m that reduces the range in
+    which it must lie.
+
+    Step 1:
+    Try multiples of 2,4,.. 2^i.... until the oracle returns ">= B".
+
+    For any ciphertext x, the oracle indicate if the corresponding plaintext
+    y = x^d mod N is less than B or greater than B.
+
+    Send: f_1 ^ e * c mod N
+    Receive (f_1 ^ e * c mod N)^d mod N
+
+    f_1 = 2 oracle returns 6 < 256
+    We keep multiplying f_1 by 2 until the oracle returns ">=B"
+
+    f_1 = 4 oracle returns 12 < 256
+    f_1 = 8 oracle returns 24 < 256
+    f_1 = 16 oracle returns 48 < 256
+    f_1 = 32 oracle returns 96 < 256
+    f_1 = 64 oracle returns 192 < 256
+    f_1 = 128 oracle returns 384 >= 256
+
+    The oracle returns ">= B" for f_1 = 128.
+
+    Step 2:
+    f_2 = floor((N + B) / B) * f_1 / 2
+    f_2 = 192
+
+    Try f_2 with the oracle.
+    Send: f_2 ^ e * c mod N
+    Receive (f_2 ^ e * c mod N)^d mod N
+    Oracle returns "<B", 25 < 256
+
+    Step 3:
+    We know that min <= m < max, where
+    min = ceil(N / f_2) = 2
+    max = floor((N + B) / f_2) = 4
+
+    m can be either 2 or 3.
+    m = 3
+
+Q.2 To prevent the attack, the vendor suggests altering the software: the
+    idea is that no matter what error occurs, the same error code will be
+    produced.  Explain whether (and why, or why not) this change alone is
+    sufficient.
+
+Answer:
+    This is change is sufficient. The system is vulnerable to this attack if
+    an opponent can distinguish between the different error codes. Although, the
+    attacked can still see that there is an error, he/she can not use that
+    to obtain useful information about the decryption of the ciphertext.
+
+Q.3 Ignoring the use of countermeasures, carefully detail any situations
+    where your implementation of this attack could fail; given more time,
+    what could you do to resolve this?
+
+Answer:
+    My implementation of the attack assumes than 2*B < N. If N < 2*B the attack
+    becomes more complicated but it is still possible. Given more time I would
+    check if N < 2*B and make sure the attack works for this case.
+
+Q.5 Explain how the concept of plaintext awareness relates to this attack.
+
+Answer:
+    A Chosen Ciphertext Attack is ineffective against a plaintext aware encryption
+    scheme. An encryption scheme is plaintext aware if it is hard to come up with
+    a valid ciphertext without knowing the plaintext. RSAES-OAEP is a plaintext
+    aware encryption scheme. However, it leaks information between the decryption
+    stage and the integrity check stage making the attack possible.
