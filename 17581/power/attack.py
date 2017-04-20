@@ -1,144 +1,11 @@
 import subprocess
-
 import sys
-
 import random
-
-import numpy
 from numpy import matrix, corrcoef, float32, uint8
 from numpy.ma import zeros
 
 from Utils import *
 
-# import hashlib
-# import sys, subprocess
-# import sys
-# import binascii
-#
-#
-#
-# ORACLE_QUERIES = 0
-#
-# # Expected label l and ciphertext c as octet strings
-# def Interact( fault, m ) :
-#     # Send (fault, message) to attack target.
-#     target_in.write( "%s\n" % ( fault ) )
-#     target_in.write( "%s\n" % ( i2osp(m) ) )
-#     target_in.flush()
-#     # From Oracle: 1-block AES ciphertext (represented as an octet string)
-#     _traces = target_out.readline().strip()[:None]
-#
-#     if _traces[-1] == ',' or _traces[-1] == ' ':
-#         _traces = _traces[:-1]
-#
-#     __traces = _traces.split(',')
-#     traces = []
-#     for i in __traces:
-#         traces.append(int(i))
-#     # Receive decryption from attack target
-#     dec = target_out.readline().strip()
-#     # return (traces, dec)
-#
-#
-#     globals().update(ORACLE_QUERIES = ORACLE_QUERIES + 1)
-#     return m
-#
-# # Expected label l and ciphertext c as octet strings
-# def Interact( j, i, c, k) :
-#     # Send (fault, message) to attack target.
-#     target_in.write( "%s\n" % ( j ) )
-#     target_in.write( "%s\n" % ( i ) )
-#     target_in.write( "%s\n" % ( c ) )
-#     target_in.write( "%s\n" % ( k ) )
-#     target_in.flush()
-#
-#     # From Oracle: 1-block AES ciphertext (represented as an octet string)
-#     _traces = target_out.readline()
-#
-#     # Receive decryption from attack target
-#     dec = target_out.readline().strip()
-#
-#     return (_traces, dec)
-#
-#
-# def playground():
-#     print "hey"
-#     #        r, f, p, i, j
-#
-#     # k = AES_1_Block("This is my password") + AES_1_Block("This is my password")
-#     # m = AES_1_Block("hello world")
-#     # c = AES.new(k).encrypt(m)
-#     #
-#     # k = ByteToHex256(k)
-#     # c = ByteToHex(c)
-#     # m = ByteToHex(m)
-#
-#
-#
-#     m = '6bc1bee22e409f96e93d7e117393172a'
-#     c = '55ece01bd0b359d2f12b0a01fcab5be2'
-#     k = '2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c'
-#     j = "00"
-#     i = "00000000000000000000000000000000"
-#
-#     (t,m_dec) = Interact(j, i, c, k)
-#
-#
-#     if m.upper() == m_dec.upper() :
-#         print "hello"
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# # Octal String to Integer
-# def os2ip(X):
-#     if isinstance(X, ( int, long )):
-#         return X
-#     elif X == '':
-#         return 0
-#     else:
-#         return int(X, 16)
-#
-# # Integer to Octal String
-# def i2osp(X):
-#     if isinstance(X, basestring):
-#         return X
-#     else:
-#         return format(X, 'X')
-#
-#
-# if ( __name__ == "__main__" ) :
-#     # Produce a sub-process representing the attack target.
-#     target = subprocess.Popen( args   = sys.argv[ 1 ],
-#                              stdout = subprocess.PIPE,
-#                              stdin  = subprocess.PIPE )
-#
-#     # Construct handles to attack target standard input and output.
-#     target_out = target.stdout
-#     target_in  = target.stdin
-#
-#     playground()
-#
-#
-#
-#
-#
 
 
 OCTET_SIZE = 32
@@ -147,9 +14,10 @@ SAMPLES = 150
 CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
 TRACE_NUM = 4000
+TWEAKS = []
 
 # Rijndael S-box
-sbox =  [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
+sbox = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
         0x2b, 0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59,
         0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7,
         0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1,
@@ -193,235 +61,192 @@ inv_s = [
     0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D
 ]
 
-def SubBytes(x) :
+
+def SubBytes(x):
     return sbox[x]
 
-# def interact( plaintext ) :
-#   # Send plaintext to attack target.
-#   target_in.write( ("%s\n" % ( plaintext )).zfill(OCTET_SIZE) ) ; target_in.flush()
-#
-#   # Receive power consumption trace and ciphertext from attack target.
-#   trace      = target_out.readline().strip()
-#   ciphertext = int(target_out.readline().strip(), 16)
-#
-#   traces = getPowerTrace(trace)
-#
-#   return (traces, ciphertext)
-#
-# def getPowerTrace(trace) :
-#     traces_l = trace.split(',')
-#
-#     length = int(traces_l[0])
-#
-#     traces = []
-#     tadd = traces.append
-#
-#     for i in range(1, TRACE_NUM+1) :
-#         tadd(int(traces_l[i]))
-#
-#     return traces
-
-
+def InvSubBytes(x) :
+    return inv_s[x]
 
 def generateRandomInputs() :
     samples = []
-    # for i in range(0, SAMPLES):
-    #     # generate random ciphertext
-    #     sample = "%X" % random.getrandbits(CIPHERTEXTSIZE)
-    #     samples.append(sample.zfill(32))
-    samples = CIPHERTEXTS
+    for i in range(0, SAMPLES):
+        sample = "%X" % random.getrandbits(CIPHERTEXTSIZE)
+        samples.append(sample.zfill(32))
     return samples
-
-import pickle
 
 def interactAll(inputs):
     traces = []; outputs = [];
-    # for i in inputs:
-    #     _traces, _output = interact(i)
-    #     traces.append(_traces)
-    #     outputs.append(_output)
-    # storeInfo(traces)
-    traces = getInfo()
+    for i in inputs:
+        _traces, _output = interact(i)
+        traces.append(_traces)
+        outputs.append(_output)
     return (outputs, traces)
 
-def storeInfo(info):
-    afile = open(r'C:\d.pkl', 'wb')
-    pickle.dump(info, afile)
-    afile.close()
 
-def getInfo():
-    # reload object from file
-    file2 = open(r'C:\d.pkl', 'rb')
-    new_d = pickle.load(file2)
-    file2.close()
-    # print dictionary object loaded from file
-    return new_d
+def generateSamples(inputs):
+    # Generate samples
+    print "Generating %d samples..." % SAMPLES
 
+    outputs, traces = interactAll(inputs)
 
-def interact( input ) :
-  j = "0"
-  i = "00000000000000000000000000000000"
+    return (outputs, traces)
 
-  k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
-  c = "A99CE4A0687CE8E8D1140F2EC21345EB"
+def generateTweakValues(inputs, key):
+    for i in inputs:
+        TWEAKS.append(calculateTweak(i, key))
 
-  target_in.write("%s\n" % j)
-  target_in.write("%s\n" % input)
-  target_in.write("%s\n" % c)
-  target_in.write("%s\n" % k)
-  target_in.flush()
-
-  # Receive power consumption trace and ciphertext from attack target.
-  trace      = target_out.readline().strip()
-  plaintext = int(target_out.readline().strip(), 16)
-
-  traces = getTrace(trace)
-
-  return (traces, plaintext)
+def calculateTweak(i, key):
+    m = i
+    c = AES.new(HexToByte(key)).encrypt(HexToByte(m))
+    t1 = os2ip(ByteToHex(c))
+    TWEAK = 1 ^ t1
+    return i2osp(TWEAK)
 
 
+def interact(input):
+    j = "0"
+    i = "00000000000000000000000000000000"
+
+    k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
+    c = "A99CE4A0687CE8E8D1140F2EC21345EB"
+
+    target_in.write("%s\n" % j)
+    target_in.write("%s\n" % input)
+    target_in.write("%s\n" % c)
+    target_in.write("%s\n" % k)
+    target_in.flush()
+
+    # Receive power consumption trace and ciphertext from attack target.
+    trace = target_out.readline().strip()
+    plaintext = i2osp(int(target_out.readline().strip(), 16))
+
+    # check_p = check("1BEE5A32595F3F3EA365A590028B7017", "5B6BA73EB81D4840B21AE1DB10F61B8C",input,0,c)
+
+
+    traces = getTrace(trace)
+
+    return (traces, plaintext)
 
 
 # Get hypothetical intermediate values
-def getIntermediateValues(byte_i, plaintexts) :
-
+def getIntermediateValues(byte_i, plaintexts, attackType):
     V = zeros((len(plaintexts), KEY_RANGE), uint8)
     # For current byte, enumerate over each ciphertext and compute each possible key value
-    for i, p in enumerate(plaintexts) :
+    for i, p in enumerate(plaintexts):
         p_i = getByte(p, byte_i)
+        t_i = 0 if attackType == 2 else getByte(TWEAKS[i], byte_i)
 
-        global T
-
-        for k in range(KEY_RANGE) :
+        for k in range(KEY_RANGE):
             # Multi-bit (1 byte) DPA Attack
-            V[i][k] = SubBytes(p_i ^ k)
+            V[i][k] = SubBytes(p_i ^ k) if attackType == 2 else SubBytes((p_i ^ t_i) ^ k)
 
     return V
 
+
 # Calculate Hamming Weight - number of symbols different from the zero-symbol
-def hammingWeight(v) :
+def hammingWeight(v):
     return bin(v).count("1")
 
-def getHammingWeightMatrix(V) :
-    H = zeros((len(V), KEY_RANGE), uint8)
-    for i in range(len(V)) :
-        for j in range(KEY_RANGE) :
-            H[i][j] = hammingWeight(V[i][j])
 
+def getHammingWeightMatrix(V):
+    H = zeros((len(V), KEY_RANGE), uint8)
+    for i in range(len(V)):
+        for j in range(KEY_RANGE):
+            H[i][j] = hammingWeight(V[i][j])
     return H
 
-def attackByte(byte_i, plaintexts, traces) :
+
+def attackByte(byte_i, plaintexts, traces, attackType):
     # Get hypothetical intermediate values
-    IV = getIntermediateValues(byte_i, plaintexts)
+    IV = getIntermediateValues(byte_i, plaintexts, attackType)
     # Power Consumption hypothetical
     PC_h = getHammingWeightMatrix(IV).transpose()
     # Power Consumption actual
     PC_a = matrix(traces).transpose()
 
-    len_PC_a = len(PC_a)
-
     CC = zeros((KEY_RANGE, TRACE_NUM), float32)
 
     # Compute the correlation
     # For each hypothetical, For each actual
-    for i in range(0, KEY_RANGE) :
-        for j in range(0, TRACE_NUM) :
-            traceIndex = random.randint(0, len_PC_a - 1)
+    for i in range(0, KEY_RANGE):
+        for j in range(0, TRACE_NUM):
             # Correlation matrix
-            list1 = PC_h[i]
-            list2 = PC_a[j]
-            CC[i][j] = corrcoef( PC_h[i], PC_a[j] )[0][1]
+            CC[i][j] = corrcoef(PC_h[i], PC_a[j])[0][1]
     return CC
 
 
-def generateSamples():
-    # Generate samples
-    print "Generating %d samples..." % SAMPLES
 
-    inputs = generateRandomInputs()
-    outputs, traces = interactAll(inputs)
-
-    return (inputs, outputs, traces)
-
-def attack1(inputs, outputs, traces) :
-    global TRACE_NUM
-
-
+def attack(texts, traces, attackType):
     print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
 
     key = ""
     for i in range(0, BYTES):
         print "\n Attacking %d Byte..." % i
-        R = attackByte(i, inputs, traces)
+        R = attackByte(i, texts, traces, attackType)
         max_coeff = R[0].max()
         keyByte = 0
         # Find the value in (0, 255) with the highest correlation coefficient.
-        for k in range(1,KEY_RANGE):
+        for k in range(1, KEY_RANGE):
             current_coeff = R[k].max()
             # If current coefficient value is larger (current k is more likely)
-            if current_coeff > max_coeff :
+            if current_coeff > max_coeff:
                 max_coeff = current_coeff
                 keyByte = k
         newByte = ("%X" % keyByte).zfill(2)
         key += newByte
-        printComparison(newByte,i, 0)
+        printComparison(newByte, i, attackType)
     return key
 
+def check(key1, key2, i, j, c):
+    key1 = HexToByte(key1)
+    key2 = HexToByte(key2)
+    i = HexToByte(i)
+    c = os2ip(c)
 
-def attack2(inputs, outputs, traces) :
-    print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
+    T = AES.new(key2).encrypt(i)
+    T = os2ip(ByteToHex(T))
+    T = pow(100, j) ^ T
+    CC = c ^ T
+    PP = AES.new(key1).decrypt(HexToByte(i2osp( CC )))
+    PP = os2ip(ByteToHex(PP))
+    P = PP ^ T
+    return i2osp(P)
 
-    
 
-    key = ""
-    for i in range(0, BYTES):
-        print "\n Attacking %d Byte..." % i
-        R = attackByte(i, outputs, traces)
-        max_coeff = R[0].max()
-        keyByte = 0
-        # Find the value in (0, 255) with the highest correlation coefficient.
-        for k in range(1,KEY_RANGE):
-            current_coeff = R[k].max()
-            # If current coefficient value is larger (current k is more likely)
-            if current_coeff > max_coeff :
-                max_coeff = current_coeff
-                keyByte = k
-        newByte = ("%X" % keyByte).zfill(2)
-        key += newByte
-        printComparison(newByte,i, 255)
-    return key
 
-if ( __name__ == "__main__" ) :
+
+
+if (__name__ == "__main__"):
     # Produce a sub-process representing the attack target.
-    target = subprocess.Popen( args   = sys.argv[ 1 ],
-                             stdout = subprocess.PIPE,
-                             stdin  = subprocess.PIPE )
+    target = subprocess.Popen(args=sys.argv[1],
+                              stdout=subprocess.PIPE,
+                              stdin=subprocess.PIPE)
 
     # Construct handles to attack target standard input and output.
     target_out = target.stdout
-    target_in  = target.stdin
+    target_in = target.stdin
 
-    inputs, outputs, traces = generateSamples()
+    inputs = generateRandomInputs()
+
+    outputs, traces = generateSamples(inputs)
+
     # Execute a function representing the attacker.
     # Attack key 2
-    key2 = attack1(inputs, outputs, traces)
+    key2 = attack(inputs, traces, 2)
+
+    key2 = "5B6BA73EB81D4840B21AE1DB10F61B8C"
+
+    generateTweakValues(inputs, key2)
+
     # Attack key 1
-    key1 = attack2(inputs, outputs, traces)
+    key1 = attack(outputs, traces, 1)
 
     print "\nGuess: key: " + key1 + key2
     print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
 
 
-
-
-
-# Byte 0      : 61
-# Byte 1      : A4
-# Byte 2      : C1
-# Byte 3      : 40
-
-    # recovered_key = "61A4C140DD7409B8066A36F92AEF097A"
 
 
 

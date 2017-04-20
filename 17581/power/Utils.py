@@ -5,6 +5,8 @@ import math
 import numpy
 from Crypto.Cipher import AES
 
+import pickle
+
 
 def AES_check( m, c, k ) :
     c1 = AES.new( HexToByte(k) ).encrypt( HexToByte(m) )
@@ -85,9 +87,9 @@ def os2ip(X):
 # Integer to Octal String
 def i2osp(X):
     if isinstance(X, basestring):
-        return X
+        return X.zfill(32)
     else:
-        return format(X, 'X')
+        return format(X, 'X').zfill(32)
 
 
 # Convert to Hex string
@@ -134,7 +136,7 @@ def preprocessTrace(_traces):
 
 
 def printComparison(newByte, i, key):
-    if key == "0":
+    if key == 1:
         str1 = "1BEE5A32595F3F3EA365A590028B7017"
     else:
         str1 = "5B6BA73EB81D4840B21AE1DB10F61B8C"
@@ -149,6 +151,20 @@ def printComparison(newByte, i, key):
 
 def getByte(ciphertext, index) :
     return int(ciphertext[index*2 : index*2 + 2], 16)
+
+
+def storeInfo(info):
+    afile = open(r'C:\d.pkl', 'wb')
+    pickle.dump(info, afile)
+    afile.close()
+
+def getInfo():
+    # reload object from file
+    file2 = open(r'C:\d.pkl', 'rb')
+    new_d = pickle.load(file2)
+    file2.close()
+    # print dictionary object loaded from file
+    return new_d
 
 CIPHERTEXTS = [
 '9F3102033F3189E703241DDD4EFAE424',

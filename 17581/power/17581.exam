@@ -1,3 +1,17 @@
+"As can be seen, XTS-AES mode, like CTR mode, is suitable for parallel
+operation. Because there is no chaining, multiple blocks can be encrypted or
+decrypted simultaneously. Unlike CTR mode, XTS-AES mode includes a nonce
+(the parameter i) as well as a counter (parameter ;). "
+
+T = Enc(K2, SN) ⊗ α^j
+C = Enc(K1, P⊕T)⊕T
+P = Dec(K1, C ⊕ T) ⊕ T
+
+
+
+
+
+
 Q.1 As a security consultant, you have been working on a prototype of the
     attack target; before the product is deployed, the vendor is willing to
     make any alteration necessary (in software or hardware) to prevent the
