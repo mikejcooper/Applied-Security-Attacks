@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c7d14278-2ffc-423b-8f91-f392ea149bf9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/power/tmp.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/C:\d.pkl" afterPath="$PROJECT_DIR$/power/C:\d.pkl" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fault/attack.py" afterPath="$PROJECT_DIR$/fault/attack.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/Utils.py" afterPath="$PROJECT_DIR$/power/Utils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/attack.py" afterPath="$PROJECT_DIR$/power/attack.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/power/tmp.py" afterPath="$PROJECT_DIR$/power/tmp.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,7 +15,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/17581$Attack_fault.coverage" NAME="Attack fault Coverage Results" MODIFIED="1493309535431" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fault" />
+    <SUITE FILE_PATH="coverage/17581$Attack_fault.coverage" NAME="Attack fault Coverage Results" MODIFIED="1493393876708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fault" />
     <SUITE FILE_PATH="coverage/17581$Attack_oaep.coverage" NAME="Attack oaep Coverage Results" MODIFIED="1489701652445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
     <SUITE FILE_PATH="coverage/17581$Attack_fault_template.coverage" NAME="Attack fault template Coverage Results" MODIFIED="1492446652458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fault" />
     <SUITE FILE_PATH="coverage/17581$Unnamed.coverage" NAME="Attack Coverage Results" MODIFIED="1488295344543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
@@ -25,7 +23,7 @@
     <SUITE FILE_PATH="coverage/17581$Attack_time.coverage" NAME="Attack time Coverage Results" MODIFIED="1489693928849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/time" />
     <SUITE FILE_PATH="coverage/17581$utils.coverage" NAME="utils Coverage Results" MODIFIED="1488139019721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
     <SUITE FILE_PATH="coverage/17581$Attack_Template.coverage" NAME="Attack Template Coverage Results" MODIFIED="1488811897359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/oaep" />
-    <SUITE FILE_PATH="coverage/17581$Attack_power.coverage" NAME="Attack power Coverage Results" MODIFIED="1493382520706" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/power" />
+    <SUITE FILE_PATH="coverage/17581$Attack_power.coverage" NAME="Attack power Coverage Results" MODIFIED="1493400158322" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/power" />
     <SUITE FILE_PATH="coverage/17581$Attack_power_AES.coverage" NAME="Attack power-AES Coverage Results" MODIFIED="1492452347481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/power" />
     <SUITE FILE_PATH="coverage/17581$Attack_power__1_.coverage" NAME="Attack power (1) Coverage Results" MODIFIED="1492448765794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Applied-Security-master-4/52610/power" />
     <SUITE FILE_PATH="coverage/17581$Attack.coverage" NAME="Attack fault Coverage Results" MODIFIED="1489162044981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fault" />
@@ -39,30 +37,8 @@
       <file leaf-file-name="Utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/power/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="173">
-              <caret line="139" column="0" lean-forward="true" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="attack.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fault/attack.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1755">
-              <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fault/Utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="705">
-              <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="67" selection-end-column="5" />
+            <state relative-caret-position="123">
+              <caret line="146" column="11" lean-forward="false" selection-start-line="146" selection-start-column="11" selection-end-line="146" selection-end-column="11" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -73,11 +49,21 @@
       <file leaf-file-name="attack.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/power/attack.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="258" column="37" lean-forward="false" selection-start-line="258" selection-start-column="37" selection-end-line="258" selection-end-column="37" />
+            <state relative-caret-position="-303">
+              <caret line="283" column="23" lean-forward="true" selection-start-line="283" selection-start-column="23" selection-end-line="283" selection-end-column="23" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="defmatrix.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/remote_sources/2098866188/-1227933812/numpy/matrixlib/defmatrix.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-417">
+              <caret line="207" column="6" lean-forward="false" selection-start-line="207" selection-start-column="6" selection-end-line="207" selection-end-column="6" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -95,9 +81,11 @@
       <file leaf-file-name="tmp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/power/tmp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="36" lean-forward="false" selection-start-line="3" selection-start-column="36" selection-end-line="3" selection-end-column="36" />
-              <folding />
+            <state relative-caret-position="1269">
+              <caret line="327" column="0" lean-forward="false" selection-start-line="327" selection-start-column="0" selection-end-line="328" selection-end-column="38" />
+              <folding>
+                <element signature="e#0#22#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -153,8 +141,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>key0</find>
-      <find>generate</find>
       <find>size</find>
       <find>Create_Test</find>
       <find>test_message</find>
@@ -183,6 +169,8 @@
       <find>interactAll</find>
       <find>inv_key</find>
       <find>trace</find>
+      <find>r_con</find>
+      <find>150</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -216,11 +204,11 @@
         <option value="$PROJECT_DIR$/power/17581.exam" />
         <option value="$PROJECT_DIR$/power/attack2.py" />
         <option value="$PROJECT_DIR$/fault/Utils.py" />
-        <option value="$PROJECT_DIR$/fault/attack.py" />
         <option value="$PROJECT_DIR$/time/attack.py" />
+        <option value="$PROJECT_DIR$/power/tmp.py" />
+        <option value="$PROJECT_DIR$/fault/attack.py" />
         <option value="$PROJECT_DIR$/power/Utils.py" />
         <option value="$PROJECT_DIR$/power/attack.py" />
-        <option value="$PROJECT_DIR$/power/tmp.py" />
       </list>
     </option>
   </component>
@@ -753,7 +741,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36631778" sideWeight="0.7083333" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3653663" sideWeight="0.7083333" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="5.2083336E-4" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2725546" sideWeight="0.49791667" order="7" side_tool="false" content_ui="tabs" />
@@ -803,9 +791,14 @@
           <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/power/Utils.py</url>
-          <line>154</line>
-          <option name="timeStamp" value="206" />
+          <url>file://$PROJECT_DIR$/power/attack.py</url>
+          <line>225</line>
+          <option name="timeStamp" value="252" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fault/attack.py</url>
+          <line>116</line>
+          <option name="timeStamp" value="260" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -818,7 +811,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="248" />
+      <option name="time" value="266" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -851,13 +844,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/power/ks1591.D" />
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/remote_sources/2098866188/-1227933812/numpy/matrixlib/defmatrix.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="207" column="6" lean-forward="false" selection-start-line="207" selection-start-column="6" selection-end-line="207" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/power/52610.R" />
     <entry file="file://$PROJECT_DIR$/power/17581.R">
       <provider selected="true" editor-type-id="text-editor">
@@ -959,16 +945,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fault/Utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="67" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/power/17581.exam">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1028">
@@ -979,34 +955,54 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fault/attack.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1755">
-          <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
+        <state relative-caret-position="780">
+          <caret line="115" column="0" lean-forward="true" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fault/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="60" column="42" lean-forward="true" selection-start-line="60" selection-start-column="42" selection-end-line="60" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#14#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/remote_sources/2098866188/-1227933812/numpy/matrixlib/defmatrix.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-417">
+          <caret line="207" column="6" lean-forward="false" selection-start-line="207" selection-start-column="6" selection-end-line="207" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/power/tmp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1269">
+          <caret line="327" column="0" lean-forward="false" selection-start-line="327" selection-start-column="0" selection-end-line="328" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/power/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="139" column="0" lean-forward="true" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
+        <state relative-caret-position="123">
+          <caret line="146" column="11" lean-forward="false" selection-start-line="146" selection-start-column="11" selection-end-line="146" selection-end-column="11" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/power/tmp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="36" lean-forward="false" selection-start-line="3" selection-start-column="36" selection-end-line="3" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/power/attack.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="258" column="37" lean-forward="false" selection-start-line="258" selection-start-column="37" selection-end-line="258" selection-end-column="37" />
+        <state relative-caret-position="-303">
+          <caret line="283" column="23" lean-forward="true" selection-start-line="283" selection-start-column="23" selection-end-line="283" selection-end-column="23" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>

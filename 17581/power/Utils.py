@@ -148,10 +148,22 @@ def getTrace(_traces) :
 
 def preprocessTrace(_traces):
     avg = numpy.mean(_traces)
+    std = numpy.std(_traces)
+    x = std
     traces = []
     for i in _traces:
-        if i > 2*avg:
+        if i > x + avg or i < avg - x:
             traces.append(int(i))
+    return traces
+
+def sameLengthTraceSets(traces):
+    smallest = len(traces[0])
+    for t in traces:
+        if len(t) < smallest:
+            smallest = len(t)
+    for i in range(len(traces)):
+        tmp = traces[i]
+        traces[i] = tmp[:smallest]
     return traces
 
 
@@ -178,9 +190,22 @@ def storeInfo(info):
     pickle.dump(info, afile)
     afile.close()
 
+def storeInfo1(info):
+    afile = open(r'C:\d1.pkl', 'wb')
+    pickle.dump(info, afile)
+    afile.close()
+
 def getInfo():
     # reload object from file
     file2 = open(r'C:\d.pkl', 'rb')
+    new_d = pickle.load(file2)
+    file2.close()
+    # print dictionary object loaded from file
+    return new_d
+
+def getInfo1():
+    # reload object from file
+    file2 = open(r'C:\d1.pkl', 'rb')
     new_d = pickle.load(file2)
     file2.close()
     # print dictionary object loaded from file

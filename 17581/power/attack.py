@@ -2,6 +2,7 @@ import multiprocessing
 import subprocess
 import sys
 import random
+import warnings
 
 from numpy import ctypeslib
 
@@ -24,7 +25,7 @@ BYTES = 16
 SAMPLES = 150
 CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
-TRACE_NUM = 2000
+TRACE_NUM = 4000
 TWEAKS = []
 
 # Rijndael S-box
@@ -67,16 +68,6 @@ def inv_key(k):
 
         k[0]   =   s[k[13]] ^ k[0] ^ r_con[i]
     return k
-
-# 2D array to correctly ordered 1D array
-def reconstruct_key(k):
-    return \
-    [
-        k[0][0], k[1][1], k[2][2], k[3][3],
-        k[1][0], k[2][1], k[3][2], k[0][3],
-        k[2][0], k[3][1], k[0][2], k[1][3],
-        k[3][0], k[0][1], k[1][2], k[2][3],
-    ]
 
 def SubBytes(x):
     return s[x]
@@ -211,8 +202,6 @@ def getIntermediateValues(byte_i, plaintexts, attackType):
         for k in range(KEY_RANGE):
             # Multi-bit (1 byte) DPA Attack
             V[i][k] = SubBytes(p_i ^ k) if attackType == 2 else SubBytes((p_i ^ t_i) ^ k)
-
-
     return V
 
 
@@ -231,21 +220,17 @@ def getHammingWeightMatrix(V):
 
 def getCorrcoef(inputs):
     global PC_a, PC_h, CC
-    i, j = inputs
+    (i, j1, j2) = inputs
     PC_h = ctypeslib.as_array(PC_h)
     PC_a = ctypeslib.as_array(PC_a)
     CC = ctypeslib.as_array(CC)
-    cor = corrcoef(PC_h[i], PC_a[j])[0][1]
-    CC[i][j] = cor
-
-
+    cor = corrcoef(PC_h[i], PC_a[j1:j2])[0][1]
+    CC[i][j1:j2] = cor
 
 PC_h = []
 PC_a = []
 CC = []
-key = zeros(BYTES, float32)
-chunkSize     = 500
-chunkSizeInc  = 50
+chunkSize = 10
 
 def attackByte(byte_i, plaintexts, traces, attackType):
     global PC_a, PC_h, CC
@@ -258,15 +243,13 @@ def attackByte(byte_i, plaintexts, traces, attackType):
     # Power Consumption actual
     PC_a = matrix(traces).transpose()[:TRACE_NUM]
 
+    chunks = TRACE_NUM / chunkSize
     inputs = []
-    chunks = TRACE_NUM / chunkSize;
-
     for i in range(0, KEY_RANGE):
         for j in range(chunks):
             j1 = j * chunkSize
             j2 = (j + 1) * chunkSize
-            for jj in range(j1, j2):
-                inputs.append((i, jj))
+            inputs.append( (i, j1, j2) )
 
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=_init, initargs=(PC_a,PC_h, CC,))
     pool.map(getCorrcoef, inputs)
@@ -278,9 +261,10 @@ def attackByte(byte_i, plaintexts, traces, attackType):
     return CC
 
 
+key = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 def AttackBytes(texts, traces, attackType):
-    print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
+    global key
     key1 = ""
     for i in range(16):
         print "\n Attacking %d Byte..." % i
@@ -298,7 +282,12 @@ def AttackBytes(texts, traces, attackType):
         newByte = ("%X" % key[i]).zfill(2)
         printComparison(newByte, i, attackType)
         key1 += newByte
-    return key1
+
+    if attackType == 1:
+        print "Inversing the key from the tenth round..."
+        k_bytes = inv_key(key)
+        k = ByteListToHexString(k_bytes)
+    return k
 
 
 if (__name__ == "__main__"):
@@ -311,13 +300,21 @@ if (__name__ == "__main__"):
     target_out = target.stdout
     target_in = target.stdin
 
+    warnings.filterwarnings("ignore")
+
     _initSharedMemory()
 
-    inputs = generateRandomInputs()
-    outputs, traces = generateSamples(inputs)
+    # inputs = generateRandomInputs()
+    # outputs, traces = generateSamples(inputs)
+    # traces = sameLengthTraceSets(traces)
+
+    inputs = CIPHERTEXTS
+    outputs = getInfo()
+    traces = getInfo1()
 
     # # Execute a function representing the attacker.
     # # Attack key 2
+    print "Attacking Key 2:"
     key2 = AttackBytes(inputs, traces, 2)
 
 
@@ -326,11 +323,13 @@ if (__name__ == "__main__"):
     generateTweakValues(inputs, key2)
 
     # Attack key 1
-    # key1 = AttackBytes(outputs, traces, 1, pool)
+    print "Attacking Key 1:"
+    key1 = AttackBytes(outputs, traces, 1)
 
-    # print "\nGuess: key: " + key1 + key2
+    print "\nGuess: key: " + key1 + key2
     print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
+    # 6A68B7405B6D06972BD0323E9FEA7764
 
 
 
