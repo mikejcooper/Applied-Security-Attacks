@@ -1,8 +1,19 @@
+import multiprocessing
 import subprocess
 import sys
 import random
+
+from numpy import ctypeslib
+
+import time
 from numpy import matrix, corrcoef, float32, uint8
 from numpy.ma import zeros
+import Queue
+import threading
+import urllib2
+from multiprocessing.dummy import Pool as ThreadPool
+import ctypes
+
 
 from Utils import *
 
@@ -13,11 +24,11 @@ BYTES = 16
 SAMPLES = 150
 CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
-TRACE_NUM = 4000
+TRACE_NUM = 2000
 TWEAKS = []
 
 # Rijndael S-box
-sbox = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
+s = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
         0x2b, 0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59,
         0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7,
         0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1,
@@ -42,8 +53,57 @@ sbox = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
         0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0,
         0x54, 0xbb, 0x16]
 
+# Inverses the whole key from the tenth round
+def inv_key(k):
+    for i in range(10, 0, -1):
+        k[4:] = \
+            [
+                k[0] ^ k[4],  k[1] ^ k[5],  k[2]  ^ k[6],  k[3]  ^ k[7],
+                k[4] ^ k[8],  k[5] ^ k[9],  k[6]  ^ k[10], k[7]  ^ k[11],
+                k[8] ^ k[12], k[9] ^ k[13], k[10] ^ k[14], k[11] ^ k[15]
+            ]
+
+        k[1:4] = [ s[k[14]] ^ k[1], s[k[15]] ^ k[2], s[k[12]] ^ k[3] ]
+
+        k[0]   =   s[k[13]] ^ k[0] ^ r_con[i]
+    return k
+
+# 2D array to correctly ordered 1D array
+def reconstruct_key(k):
+    return \
+    [
+        k[0][0], k[1][1], k[2][2], k[3][3],
+        k[1][0], k[2][1], k[3][2], k[0][3],
+        k[2][0], k[3][1], k[0][2], k[1][3],
+        k[3][0], k[0][1], k[1][2], k[2][3],
+    ]
+
 def SubBytes(x):
-    return sbox[x]
+    return s[x]
+
+
+def _init(PC_a1, PC_h1, CC1):
+    """ Each pool process calls this initializer. Load the array to be populated into that process's global namespace """
+    global PC_a, PC_h, CC
+    PC_a = PC_a1
+    PC_h = PC_h1
+    CC = CC1
+
+
+def _initSharedMemory():
+    global PC_a, PC_h, CC
+
+    PC_h_base = multiprocessing.Array(ctypes.c_float, KEY_RANGE * SAMPLES)
+    PC_h = ctypeslib.as_array(PC_h_base.get_obj())
+    PC_h = PC_h.reshape(KEY_RANGE, SAMPLES)
+
+    PC_a_base = multiprocessing.Array(ctypes.c_float, SAMPLES * TRACE_NUM)
+    PC_a = ctypeslib.as_array(PC_a_base.get_obj())
+    PC_a = PC_a.reshape(TRACE_NUM, SAMPLES)
+
+    CC_base = multiprocessing.Array(ctypes.c_float, KEY_RANGE * TRACE_NUM)
+    CC = ctypeslib.as_array(CC_base.get_obj())
+    CC = CC.reshape(KEY_RANGE, TRACE_NUM)
 
 def generateRandomInputs() :
     samples = []
@@ -73,20 +133,20 @@ def generateTweakValues(inputs, key):
     for i in inputs:
         TWEAKS.append(calculateTweak(i, key))
 
-def calculateTweak(i, key):
-    c = AES.new(HexToByte(key)).encrypt(HexToByte(i))
-    t1 = os2ip(ByteToHex(c))
-    TWEAK = 1 ^ t1
-    return i2osp(TWEAK)
+def calculateTweak(i, key2):
+    T = AES.new(key2).encrypt(HexToByte(i))
+    T = os2ip(ByteToHex(T))
+    # Next operation: Group multiplication with j, but j = 0. Therefore T stays the same.
+    return i2osp(T)
 
 def interact(input):
     j = "000"
-    i = "00000000000000000000000000000000"
+    # i = "00000000000000000000000000000000"
     k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
     c = "A99CE4A0687CE8E8D1140F2EC21345EB"
 
     target_in.write("%s\n" % j)
-    target_in.write("%s\n" % i)
+    target_in.write("%s\n" % input)
     target_in.write("%s\n" % c)
     target_in.write("%s\n" % k)
     target_in.flush()
@@ -95,7 +155,7 @@ def interact(input):
     trace = target_out.readline().strip()
     plaintext = target_out.readline().strip().zfill(32)
 
-    # plaintext_check = check("1BEE5A32595F3F3EA365A590028B7017", "5B6BA73EB81D4840B21AE1DB10F61B8C",i,0,c)
+    # plaintext_check = check("1BEE5A32595F3F3EA365A590028B7017", "5B6BA73EB81D4840B21AE1DB10F61B8C",input,0,c)
 
 
 
@@ -133,7 +193,7 @@ def check(key1, key2, i, j, c):
 
     T = AES.new(key2).encrypt(_i)
     T = os2ip(ByteToHex(T))
-    T = pow(1000,0) ^ T
+    # Next operation: Group multiplication with j, but j = 0. Therefore T stays the same.
     CC = c ^ T
     PP = AES.new(key1).decrypt(HexToByte(i2osp( CC )))
     PP = os2ip(ByteToHex(PP))
@@ -152,6 +212,7 @@ def getIntermediateValues(byte_i, plaintexts, attackType):
             # Multi-bit (1 byte) DPA Attack
             V[i][k] = SubBytes(p_i ^ k) if attackType == 2 else SubBytes((p_i ^ t_i) ^ k)
 
+
     return V
 
 
@@ -168,31 +229,60 @@ def getHammingWeightMatrix(V):
     return H
 
 
+def getCorrcoef(inputs):
+    global PC_a, PC_h, CC
+    i, j = inputs
+    PC_h = ctypeslib.as_array(PC_h)
+    PC_a = ctypeslib.as_array(PC_a)
+    CC = ctypeslib.as_array(CC)
+    cor = corrcoef(PC_h[i], PC_a[j])[0][1]
+    CC[i][j] = cor
+
+
+
+PC_h = []
+PC_a = []
+CC = []
+key = zeros(BYTES, float32)
+chunkSize     = 500
+chunkSizeInc  = 50
+
 def attackByte(byte_i, plaintexts, traces, attackType):
+    global PC_a, PC_h, CC
+    start = time.time()
+
     # Get hypothetical intermediate values
     IV = getIntermediateValues(byte_i, plaintexts, attackType)
     # Power Consumption hypothetical
     PC_h = getHammingWeightMatrix(IV).transpose()
     # Power Consumption actual
-    PC_a = matrix(traces).transpose()
+    PC_a = matrix(traces).transpose()[:TRACE_NUM]
 
-    CC = zeros((KEY_RANGE, TRACE_NUM), float32)
+    inputs = []
+    chunks = TRACE_NUM / chunkSize;
 
-    # Compute the correlation
-    # For each hypothetical, For each actual
     for i in range(0, KEY_RANGE):
-        for j in range(0, TRACE_NUM):
-            # Correlation matrix
-            CC[i][j] = corrcoef(PC_h[i], PC_a[j])[0][1]
+        for j in range(chunks):
+            j1 = j * chunkSize
+            j2 = (j + 1) * chunkSize
+            for jj in range(j1, j2):
+                inputs.append((i, jj))
+
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=_init, initargs=(PC_a,PC_h, CC,))
+    pool.map(getCorrcoef, inputs)
+    pool.close()
+    pool.join()
+
+    end = time.time()
+    print "Decryption time: %ds" % (end - start)
     return CC
 
 
 
-def attack(texts, traces, attackType):
+def AttackBytes(texts, traces, attackType):
     print "Attacking key using the first %d data points from each trace for each sample" % TRACE_NUM
-
-    key = ""
-    for i in range(0, BYTES):
+    key1 = ""
+    for i in range(16):
         print "\n Attacking %d Byte..." % i
         R = attackByte(i, texts, traces, attackType)
         max_coeff = R[0].max()
@@ -204,10 +294,12 @@ def attack(texts, traces, attackType):
             if current_coeff > max_coeff:
                 max_coeff = current_coeff
                 keyByte = k
-        newByte = ("%X" % keyByte).zfill(2)
-        key += newByte
+        key[i] = keyByte
+        newByte = ("%X" % key[i]).zfill(2)
         printComparison(newByte, i, attackType)
-    return key
+        key1 += newByte
+    return key1
+
 
 if (__name__ == "__main__"):
     # Produce a sub-process representing the attack target.
@@ -219,22 +311,24 @@ if (__name__ == "__main__"):
     target_out = target.stdout
     target_in = target.stdin
 
-    inputs = generateRandomInputs()
+    _initSharedMemory()
 
+    inputs = generateRandomInputs()
     outputs, traces = generateSamples(inputs)
 
-    # Execute a function representing the attacker.
-    # Attack key 2
-    key2 = attack(inputs, traces, 2)
+    # # Execute a function representing the attacker.
+    # # Attack key 2
+    key2 = AttackBytes(inputs, traces, 2)
+
 
     key2 = "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
     generateTweakValues(inputs, key2)
 
     # Attack key 1
-    key1 = attack(outputs, traces, 1)
+    # key1 = AttackBytes(outputs, traces, 1, pool)
 
-    print "\nGuess: key: " + key1 + key2
+    # print "\nGuess: key: " + key1 + key2
     print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
 

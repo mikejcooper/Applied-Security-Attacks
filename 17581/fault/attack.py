@@ -140,9 +140,10 @@ def attackLoop():
         print " Oracle uses:   " + str(ORACLE_QUERIES)
 
     else:
-        print "Error: Key NOT recovered"
+        print "Error: Key NOT correct"
+        print " Key recovered: " + k
         print "Trying again..."
-        attack()
+        attackLoop()
 
 
 
