@@ -83,6 +83,7 @@ def _init(PC_a1, PC_h1, CC1):
 
 def _initSharedMemory():
     global PC_a, PC_h, CC
+    warnings.filterwarnings("ignore")
 
     PC_h_base = multiprocessing.Array(ctypes.c_float, KEY_RANGE * SAMPLES)
     PC_h = ctypeslib.as_array(PC_h_base.get_obj())
@@ -159,28 +160,6 @@ def check(key1, key2, i, j, c):
     key2 = HexToByte(key2)
     _i = HexToByte(i)
     c = os2ip(c)
-
-    # Checks
-    os = "1BEE5A32595F3F3EA365A590028B7017"
-    os2ip1 = os2ip(os)
-    i2osp1 = i2osp(os2ip1).upper()
-
-    hex = "1BEE5A32595F3F3EA365A590028B7017"
-    h1 = HexToByte(hex)
-    b1 = ByteToHex(h1).upper()
-
-    aes1 = AES.new(key1).encrypt(_i)
-    aes2 = AES.new(key1).decrypt(aes1)
-    aes2 = ByteToHex(aes2).upper()
-
-    if(hex == b1):
-        print "Hex2Byte works"
-    if(os == i2osp1):
-        print "i2os works"
-    if (aes2 == i):
-        print "AES works"
-
-
 
     T = AES.new(key2).encrypt(_i)
     T = os2ip(ByteToHex(T))
@@ -295,9 +274,6 @@ if (__name__ == "__main__"):
     target_out = target.stdout
     target_in = target.stdin
 
-
-    warnings.filterwarnings("ignore")
-
     _initSharedMemory()
 
     # inputs = generateRandomInputs()
@@ -328,8 +304,7 @@ if (__name__ == "__main__"):
     print "\nGuess: key: " + key1 + key2
     print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
-    # 6A68B7405B6D06972BD0323E9FEA7764
-#     953AEA5C491593730EAD2105B69498DD -> 4FE5C95F24B5A0155FC4EF08430B0F91
+#   953AEA5C491593730EAD2105B69498DD
 
 
 
