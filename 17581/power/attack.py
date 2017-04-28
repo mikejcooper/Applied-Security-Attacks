@@ -25,7 +25,7 @@ BYTES = 16
 SAMPLES = 150
 CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
-TRACE_NUM = 4000
+TRACE_NUM = 12000
 TWEAKS = []
 
 # Rijndael S-box
@@ -282,11 +282,6 @@ def AttackBytes(texts, traces, attackType):
         newByte = ("%X" % key[i]).zfill(2)
         printComparison(newByte, i, attackType)
         key1 += newByte
-
-    if attackType == 1:
-        print "Inversing the key from the tenth round..."
-        k_bytes = inv_key(key)
-        k = ByteListToHexString(k_bytes)
     return k
 
 
@@ -300,6 +295,7 @@ if (__name__ == "__main__"):
     target_out = target.stdout
     target_in = target.stdin
 
+
     warnings.filterwarnings("ignore")
 
     _initSharedMemory()
@@ -312,15 +308,18 @@ if (__name__ == "__main__"):
     outputs = getInfo()
     traces = getInfo1()
 
+    TRACE_NUM /= 4
     # # Execute a function representing the attacker.
     # # Attack key 2
     print "Attacking Key 2:"
-    key2 = AttackBytes(inputs, traces, 2)
+    # key2 = AttackBytes(inputs, traces, 2)
 
 
     key2 = "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
     generateTweakValues(inputs, key2)
+
+    TRACE_NUM *= 4
 
     # Attack key 1
     print "Attacking Key 1:"
@@ -330,6 +329,7 @@ if (__name__ == "__main__"):
     print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"
 
     # 6A68B7405B6D06972BD0323E9FEA7764
+#     953AEA5C491593730EAD2105B69498DD -> 4FE5C95F24B5A0155FC4EF08430B0F91
 
 
 

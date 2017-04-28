@@ -207,59 +207,64 @@ def getHammingWeightMatrix(V):
 def getCorrcoef(inputs):
     global PC_a, PC_h, CC
     i, j = inputs
-    PC_h = ctypeslib.as_array(PC_h)
-    PC_a = ctypeslib.as_array(PC_a)
-    CC = ctypeslib.as_array(CC)
     cor = corrcoef(PC_h[i], PC_a[j])[0][1]
     CC[i][j] = cor
 
-def _init(PC_a1, PC_h1, CC1):
-    """ Each pool process calls this initializer. Load the array to be populated into that process's global namespace """
-    global PC_a, PC_h, CC
-    PC_a = PC_a1
-    PC_h = PC_h1
-    CC = CC1
-
 import ctypes
-PC_h = []
+PC_h = zeros((SAMPLES, KEY_RANGE), uint8)
 PC_a = []
-CC = []
+CC = zeros((KEY_RANGE, TRACE_NUM), float32)
 def attackByte(byte_i, plaintexts, traces, attackType):
     global PC_a, PC_h, CC
+
+    # PC_h_base = multiprocessing.Array(ctypes.c_uint8, 256 * 150)
+    # PC_h = ctypeslib.as_array(PC_h_base.get_obj())
+    # PC_h = PC_h.reshape(256, 150)
+    # PC_a_base = multiprocessing.Array(ctypes.c_double, 137671 * 150)
+    # PC_a = ctypeslib.as_array(PC_a_base.get_obj())
+    # PC_a = CC.reshape(137671, 150)
+    # CC_base   = multiprocessing.Array(ctypes.c_float, KEY_RANGE * TRACE_NUM)
+    # CC = ctypeslib.as_array(CC_base.get_obj())
+    # CC = CC.reshape(KEY_RANGE, TRACE_NUM)
+
+
+
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+
     start = time.time()
-
-    PC_h_base = multiprocessing.Array(ctypes.c_float, KEY_RANGE * SAMPLES)
-    PC_h = ctypeslib.as_array(PC_h_base.get_obj())
-    PC_h = PC_h.reshape(KEY_RANGE, SAMPLES)
-
-    PC_a_base = multiprocessing.Array(ctypes.c_float, SAMPLES * TRACE_NUM)
-    PC_a = ctypeslib.as_array(PC_a_base.get_obj())
-    PC_a = PC_a.reshape(TRACE_NUM, SAMPLES)
-
-    CC_base   = multiprocessing.Array(ctypes.c_float, KEY_RANGE * TRACE_NUM)
-    CC = ctypeslib.as_array(CC_base.get_obj())
-    CC = CC.reshape(KEY_RANGE, TRACE_NUM)
-
-
-
-
-
 
     # Get hypothetical intermediate values
     IV = getIntermediateValues(byte_i, plaintexts, attackType)
     # Power Consumption hypothetical
     PC_h = getHammingWeightMatrix(IV).transpose()
     # Power Consumption actual
-    PC_a = matrix(traces).transpose()[:TRACE_NUM]
+    PC_a = matrix(traces).transpose()[:KEY_RANGE][:TRACE_NUM]
+
+    end = time.time()
+    print "Decryption time: %ds" % (end - start)
 
     inputs = []
     for i in range(0, KEY_RANGE):
         for j in range(0, TRACE_NUM):
             inputs.append((i, j))
 
-    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=_init, initargs=(PC_a,PC_h, CC,))
-    pool.map(getCorrcoef, inputs)
+    end = time.time()
+    print "Decryption time: %ds" % (end - start)
 
+    for i in range(0, KEY_RANGE):
+        for j in range(0, TRACE_NUM):
+            (i, j, cor) = getCorrcoef(inputs[i*TRACE_NUM +j])
+            CC[i][j] = cor
+
+    # pool.map(getCorrcoef, inputs)
+
+
+    # Compute the correlation
+    # For each hypothetical, For each actual
+    # for i in range(0, KEY_RANGE):
+    #     for j in range(0, TRACE_NUM):
+    #         # Correlation matrix
+    #         CC[i][j] = corrcoef(PC_h[i], PC_a[j])[0][1]
 
     end = time.time()
     print "Decryption time: %ds" % (end - start)

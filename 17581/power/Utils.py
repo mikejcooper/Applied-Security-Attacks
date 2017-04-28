@@ -237,9 +237,11 @@ def check(key1, key2, i, j, c):
     if (aes2 == i):
         print "AES works"
 
+
+
     T = AES.new(key2).encrypt(_i)
     T = os2ip(ByteToHex(T))
-    T = pow(1000,0) ^ T
+    # Next operation: Group multiplication with j, but j = 0. Therefore T stays the same.
     CC = c ^ T
     PP = AES.new(key1).decrypt(HexToByte(i2osp( CC )))
     PP = os2ip(ByteToHex(PP))
