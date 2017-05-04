@@ -22,11 +22,15 @@ from Utils import *
 
 OCTET_SIZE = 32
 BYTES = 16
-SAMPLES = 150
+SAMPLES = 20
 CIPHERTEXTSIZE = 128
 KEY_RANGE = 256
-TRACE_NUM = 12000
+TRACE_NUM = 4000
 TWEAKS = []
+
+CHUNKSIZE = 5
+
+
 
 # Rijndael S-box
 s = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
@@ -54,26 +58,8 @@ s = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
         0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0,
         0x54, 0xbb, 0x16]
 
-# Inverses the whole key from the tenth round
-def inv_key(k):
-    for i in range(10, 0, -1):
-        k[4:] = \
-            [
-                k[0] ^ k[4],  k[1] ^ k[5],  k[2]  ^ k[6],  k[3]  ^ k[7],
-                k[4] ^ k[8],  k[5] ^ k[9],  k[6]  ^ k[10], k[7]  ^ k[11],
-                k[8] ^ k[12], k[9] ^ k[13], k[10] ^ k[14], k[11] ^ k[15]
-            ]
-
-        k[1:4] = [ s[k[14]] ^ k[1], s[k[15]] ^ k[2], s[k[12]] ^ k[3] ]
-
-        k[0]   =   s[k[13]] ^ k[0] ^ r_con[i]
-    return k
-
 def SubBytes(x):
     return s[x]
-
-def InvSubBytes(x):
-    return inv_s[x]
 
 def _init(PC_a1, PC_h1, CC1):
     """ Each pool process calls this initializer. Load the array to be populated into that process's global namespace """
@@ -81,7 +67,6 @@ def _init(PC_a1, PC_h1, CC1):
     PC_a = PC_a1
     PC_h = PC_h1
     CC = CC1
-
 
 def _initSharedMemory():
     global PC_a, PC_h, CC
@@ -113,7 +98,6 @@ def interactAll(inputs):
         traces.append(_traces)
         outputs.append(_output)
     return (outputs, traces)
-
 
 def generateSamples(inputs):
     # Generate samples
@@ -160,8 +144,8 @@ def interact2(input):
 def interact(input):
     j = "000"
     # i = "00000000000000000000000000000000"
-    k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
-    c = "A99CE4A0687CE8E8D1140F2EC21345EB"
+    # k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
+    # c = "A99CE4A0687CE8E8D1140F2EC21345EB"
 
     target_in.write("%s\n" % j)
     target_in.write("%s\n" % input)
@@ -173,28 +157,10 @@ def interact(input):
     trace = target_out.readline().strip()
     plaintext = target_out.readline().strip().zfill(32)
 
-    # plaintext_check = check("1BEE5A32595F3F3EA365A590028B7017", "5B6BA73EB81D4840B21AE1DB10F61B8C",input,0,c)
-
-
-
+    # plaintext_check = AES_XTS_Check("1BEE5A32595F3F3EA365A590028B7017", "5B6BA73EB81D4840B21AE1DB10F61B8C",input,0,c)
 
     traces = getTrace(trace)
     return (traces, plaintext)
-
-def check(key1, key2, i, j, c):
-    key1 = HexToByte(key1)
-    key2 = HexToByte(key2)
-    _i = HexToByte(i)
-    c = os2ip(c)
-
-    T = AES.new(key2).encrypt(_i)
-    T = os2ip(ByteToHex(T))
-    # Next operation: Group multiplication with j, but j = 0. Therefore T stays the same.
-    CC = c ^ T
-    PP = AES.new(key1).decrypt(HexToByte(i2osp( CC )))
-    PP = os2ip(ByteToHex(PP))
-    P = PP ^ T
-    return i2osp(P)
 
 # Get hypothetical intermediate values
 def getIntermediateValues(byte_i, plaintexts, attackType):
@@ -232,10 +198,10 @@ def getCorrcoef(inputs):
     cor = corrcoef(PC_h[i], PC_a[j1:j2])[0][1]
     CC[i][j1:j2] = cor
 
+# Shared memory arrays
 PC_h = []
 PC_a = []
 CC = []
-chunkSize = 5
 
 def attackByte(byte_i, plaintexts, traces, attackType):
     global PC_a, PC_h, CC
@@ -248,15 +214,13 @@ def attackByte(byte_i, plaintexts, traces, attackType):
     # Power Consumption actual
     PC_a = matrix(traces).transpose()[:TRACE_NUM] if attackType == 2 else matrix(traces).transpose()[len(traces[0]) - TRACE_NUM : len(traces[0])]
 
-    chunks = TRACE_NUM / chunkSize
+    chunks = TRACE_NUM / CHUNKSIZE
     inputs = []
     for i in range(0, KEY_RANGE):
         for j in range(chunks):
-            j1 = j * chunkSize
-            j2 = (j + 1) * chunkSize
+            j1 = j * CHUNKSIZE
+            j2 = (j + 1) * CHUNKSIZE
             inputs.append( (i, j1, j2) )
-            # getCorrcoef(inputs[i*KEY_RANGE + j])
-
 
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=_init, initargs=(PC_a,PC_h, CC,))
     pool.map(getCorrcoef, inputs)
@@ -267,14 +231,11 @@ def attackByte(byte_i, plaintexts, traces, attackType):
     print "Decryption time: %ds" % (end - start)
     return CC
 
-
-key = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-
 def AttackBytes(texts, traces, attackType):
     global key
     key1 = ""
     for i in range(16):
-        print "\n Attacking %d Byte..." % i
+        print "\nAttacking %d Byte..." % i
         R = attackByte(i, texts, traces, attackType)
         max_coeff = R[0].max()
         keyByte = 0
@@ -285,12 +246,11 @@ def AttackBytes(texts, traces, attackType):
             if current_coeff > max_coeff:
                 max_coeff = current_coeff
                 keyByte = k
-        print max_coeff
-        key[i] = keyByte
-        newByte = ("%X" % key[i]).zfill(2)
+        print "Confidence: %f" % max_coeff
+        newByte = toHex(keyByte)
         printComparison(newByte, i, attackType)
         key1 += newByte
-    return k
+    return key1
 
 
 if (__name__ == "__main__"):
@@ -305,37 +265,33 @@ if (__name__ == "__main__"):
 
     _initSharedMemory()
 
-    inputs = CIPHERTEXTS
-
     inputs = generateRandomInputs()
     outputs, traces = generateSamples(inputs)
     traces = sameLengthTraceSets(traces)
 
-    # inputs = CIPHERTEXTS
-    # outputs = getInfo()
-    # traces = getInfo1()
-
-    TRACE_NUM /= 4
-    # # Execute a function representing the attacker.
-    # # Attack key 2
-    print "Attacking Key 2:"
-    # key2 = AttackBytes(inputs, traces, 2)
+    # Attack key 2
+    print "\nAttacking Key 2:"
+    key2 = AttackBytes(inputs, traces, 2)
 
     key2 = "2BDC1E95C035F9520ACF58EEC0C30B88"
+    print "\nKey 2: " + key2
 
     generateTweakValues(inputs, key2)
 
-    TRACE_NUM *= 2
-
     # Attack key 1
-    print "Attacking Key 1:"
+    print "\nAttacking Key 1:"
     key1 = AttackBytes(outputs, traces, 1)
+
+    print "\nKey 1: " + key1
 
     print "\nGuess: key: " + key1 + key2
     print "True : Key: " + "4BD55725A2D190A44D73764FE3EC68F7" + "2BDC1E95C035F9520ACF58EEC0C30B88"
+    print "Oracle uses:", str(SAMPLES)
+    print "Number of traces per attack:", str(TRACE_NUM)
 
-#     Real: K1: 4BD55725A2D190A44D73764FE3EC68F7
-#           K2: 2BDC1E95C035F9520ACF58EEC0C30B88
+
+#   K1: 4BD55725A2D190A44D73764FE3EC68F7
+#   K2: 2BDC1E95C035F9520ACF58EEC0C30B88
 
 
 
