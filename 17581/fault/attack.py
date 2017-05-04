@@ -42,6 +42,28 @@ def reconstruct_key(k):
     ]
 
 
+
+# def exh(hypotheses):
+#     for (k1, k8, k11, k14) in hypotheses[0]:
+#         for (k2, k5, k12, k15) in hypotheses[1]:
+#             ii = 0
+#             for (k3, k6, k9, k16) in hypotheses[2]:
+#                 for (k4, k7, k10, k13) in hypotheses[3]:
+#                     # key = step2_all(((0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16), x, xp))
+#                     i += 1
+#                     # if key != -1 :
+#                     #     # print "Testing key: " + getString(key[1:])
+#                     #     k = testKey(key)
+#                     #     # k = testKey_2(key)
+#                     #     if k != -1 :
+#                     #         print "Key: " + k
+#                     #         return 1
+#                     inputs[ii] = (((0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16), x, xp))
+#                     ii += 1
+#
+
+
+
 # Inject a fault and build hypotheses from this fault via step 1
 def create_hypotheses(m, c):
     # m = Correct output, m_f = Fault output
@@ -86,8 +108,6 @@ def create_hypotheses(m, c):
                                     for key2 in HV[bytes[2]][i]
                                     for key3 in HV[bytes[3]][i]]
     return hypotheses
-
-
 
 def attack(c, m):
 

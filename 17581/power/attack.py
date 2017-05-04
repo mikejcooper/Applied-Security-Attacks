@@ -72,6 +72,8 @@ def inv_key(k):
 def SubBytes(x):
     return s[x]
 
+def InvSubBytes(x):
+    return inv_s[x]
 
 def _init(PC_a1, PC_h1, CC1):
     """ Each pool process calls this initializer. Load the array to be populated into that process's global namespace """
@@ -126,12 +128,12 @@ def generateTweakValues(inputs, key):
         TWEAKS.append(calculateTweak(i, key))
 
 def calculateTweak(i, key2):
-    T = AES.new(key2).encrypt(HexToByte(i))
+    T = AES.new(HexToByte(key2)).encrypt(HexToByte(i))
     T = os2ip(ByteToHex(T))
     # Next operation: Group multiplication with j, but j = 0. Therefore T stays the same.
     return i2osp(T)
 
-def interact(input):
+def interact2(input):
     j = "000"
     # i = "00000000000000000000000000000000"
     k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
@@ -141,6 +143,30 @@ def interact(input):
     target_in.write("%s\n" % input)
     target_in.write("%s\n" % c)
     target_in.write("%s\n" % k)
+    target_in.flush()
+
+    # Receive power consumption trace and ciphertext from attack target.
+    trace = target_out.readline().strip()
+    plaintext = target_out.readline().strip().zfill(32)
+
+    # plaintext_check = check("1BEE5A32595F3F3EA365A590028B7017", "5B6BA73EB81D4840B21AE1DB10F61B8C",input,0,c)
+
+
+
+
+    traces = getTrace(trace)
+    return (traces, plaintext)
+
+def interact(input):
+    j = "000"
+    # i = "00000000000000000000000000000000"
+    k = '1BEE5A32595F3F3EA365A590028B7017' + '5B6BA73EB81D4840B21AE1DB10F61B8C'
+    c = "A99CE4A0687CE8E8D1140F2EC21345EB"
+
+    target_in.write("%s\n" % j)
+    target_in.write("%s\n" % input)
+    # target_in.write("%s\n" % c)
+    # target_in.write("%s\n" % k)
     target_in.flush()
 
     # Receive power consumption trace and ciphertext from attack target.
@@ -209,7 +235,7 @@ def getCorrcoef(inputs):
 PC_h = []
 PC_a = []
 CC = []
-chunkSize = 10
+chunkSize = 5
 
 def attackByte(byte_i, plaintexts, traces, attackType):
     global PC_a, PC_h, CC
@@ -220,7 +246,7 @@ def attackByte(byte_i, plaintexts, traces, attackType):
     # Power Consumption hypothetical
     PC_h = getHammingWeightMatrix(IV).transpose()
     # Power Consumption actual
-    PC_a = matrix(traces).transpose()[:TRACE_NUM]
+    PC_a = matrix(traces).transpose()[:TRACE_NUM] if attackType == 2 else matrix(traces).transpose()[len(traces[0]) - TRACE_NUM : len(traces[0])]
 
     chunks = TRACE_NUM / chunkSize
     inputs = []
@@ -229,6 +255,8 @@ def attackByte(byte_i, plaintexts, traces, attackType):
             j1 = j * chunkSize
             j2 = (j + 1) * chunkSize
             inputs.append( (i, j1, j2) )
+            # getCorrcoef(inputs[i*KEY_RANGE + j])
+
 
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=_init, initargs=(PC_a,PC_h, CC,))
     pool.map(getCorrcoef, inputs)
@@ -257,6 +285,7 @@ def AttackBytes(texts, traces, attackType):
             if current_coeff > max_coeff:
                 max_coeff = current_coeff
                 keyByte = k
+        print max_coeff
         key[i] = keyByte
         newByte = ("%X" % key[i]).zfill(2)
         printComparison(newByte, i, attackType)
@@ -276,13 +305,15 @@ if (__name__ == "__main__"):
 
     _initSharedMemory()
 
-    # inputs = generateRandomInputs()
-    # outputs, traces = generateSamples(inputs)
-    # traces = sameLengthTraceSets(traces)
-
     inputs = CIPHERTEXTS
-    outputs = getInfo()
-    traces = getInfo1()
+
+    inputs = generateRandomInputs()
+    outputs, traces = generateSamples(inputs)
+    traces = sameLengthTraceSets(traces)
+
+    # inputs = CIPHERTEXTS
+    # outputs = getInfo()
+    # traces = getInfo1()
 
     TRACE_NUM /= 4
     # # Execute a function representing the attacker.
@@ -290,21 +321,22 @@ if (__name__ == "__main__"):
     print "Attacking Key 2:"
     # key2 = AttackBytes(inputs, traces, 2)
 
-
-    key2 = "5B6BA73EB81D4840B21AE1DB10F61B8C"
+    key2 = "2BDC1E95C035F9520ACF58EEC0C30B88"
 
     generateTweakValues(inputs, key2)
 
-    TRACE_NUM *= 4
+    TRACE_NUM *= 2
 
     # Attack key 1
     print "Attacking Key 1:"
     key1 = AttackBytes(outputs, traces, 1)
 
     print "\nGuess: key: " + key1 + key2
-    print "True : Key: " + "1BEE5A32595F3F3EA365A590028B7017" + "5B6BA73EB81D4840B21AE1DB10F61B8C"
+    print "True : Key: " + "4BD55725A2D190A44D73764FE3EC68F7" + "2BDC1E95C035F9520ACF58EEC0C30B88"
 
-#   953AEA5C491593730EAD2105B69498DD
+#     Real: K1: 4BD55725A2D190A44D73764FE3EC68F7
+#           K2: 2BDC1E95C035F9520ACF58EEC0C30B88
+
 
 
 
