@@ -161,6 +161,12 @@ def Print_SQ_Matrix(matrix, form) :
                 Exception("Print_SQ_Matrix: Argument 2: 'form' incorrect" )
         print
 
+def HexListToString(hex_list):
+    string = ""
+    for num in hex_list:
+        string += format(num, 'X').zfill(2)
+    return string
+
 # Convert hex to Byte List
 def HexToByteList(hex_string):
     return [int(hex_string[i:i+2], 16) for i in range(0, len(hex_string) - 1, 2)]
@@ -221,3 +227,41 @@ def gf28_mul(a, b):
         if (b >> i) & 1:
             t ^= a
     return t
+
+
+def getByte(ciphertext, index) :
+    return (ciphertext[index-1])
+
+# Multiplication in F8
+def mul(a, b):
+    result = 0
+    for i in range(8):
+        if b & 1 == 1:
+            result ^= a
+        bit = a & 0x80
+        a <<= 1
+        if bit == 0x80:
+            a ^= 0x1b
+        b >>= 1
+    return result % 256
+
+
+def getByteList(x) :
+
+    x1   = getByte(x,  1)
+    x2   = getByte(x,  2)
+    x3   = getByte(x,  3)
+    x4   = getByte(x,  4)
+    x5   = getByte(x,  5)
+    x6   = getByte(x,  6)
+    x7   = getByte(x,  7)
+    x8   = getByte(x,  8)
+    x9   = getByte(x,  9)
+    x10  = getByte(x,  10)
+    x11  = getByte(x,  11)
+    x12  = getByte(x,  12)
+    x13  = getByte(x,  13)
+    x14  = getByte(x,  14)
+    x15  = getByte(x,  15)
+    x16  = getByte(x,  16)
+    return (0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16)

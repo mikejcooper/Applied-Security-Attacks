@@ -55,19 +55,19 @@ generality, realism, or style of a solution.
 
               target material : [A7482536D8F7C91B]
 
-[?] Stage 3 : an attack based on an injected fault
+[X] Stage 3 : an attack based on an injected fault
               - correct target material                              ( 40%)
               - solution quality wrt. efficiency, robustness etc.    ( 30%)
               - analysis questions                                   ( 30%)
 
-              target material : [...]
+              target material : [CB6818217807A5E2599A286817349133]
 
-[?] Stage 4 : an attack based on power consumption
+[X] Stage 4 : an attack based on power consumption
               - correct target material                              ( 40%)
               - solution quality wrt. efficiency, robustness etc.    ( 30%)
               - analysis questions                                   ( 30%)
 
-              target material : [...]
+              target material : [4BD55725A2D190A44D73764FE3EC68F72BDC1E95C035F9520ACF58EEC0C30B88]
 
                                                                      ------
                                                                      (400%)

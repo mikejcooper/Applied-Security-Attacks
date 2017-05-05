@@ -49,6 +49,8 @@ def AES_XTS_Check(key1, key2, i, j, c):
 def HexToByteList(hex_string):
     return [int(hex_string[i:i+2], 16) for i in range(0, len(hex_string) - 1, 2)]
 
+
+
 # Convert hex to Byte List
 def ByteListToHexString(byteList):
     return "".join([("%X" % byte).zfill(2) for byte in byteList])

@@ -101,15 +101,19 @@ def interact(input):
     return (traces, plaintext)
 
 # Get hypothetical intermediate values
-def getIntermediateValues(byte_i, plaintexts, attackType):
-    V = zeros((len(plaintexts), KEY_RANGE), uint8)
+def getIntermediateValues(byte_i, texts, attackType):
+    V = zeros((len(texts), KEY_RANGE), uint8)
+
     # For current byte, enumerate over each ciphertext and compute each possible key value
-    for i, p in enumerate(plaintexts):
+    for i, p in enumerate(texts):
         p_i = getByte(p, byte_i)
-        t_i = 0 if attackType == 2 else getByte(TWEAKS[i], byte_i)
 
         for k in range(KEY_RANGE):
-            V[i][k] = SubBytes(p_i ^ k) if attackType == 2 else SubBytes((p_i ^ t_i) ^ k)
+            if (attackType == 2):                       # Key 2
+                V[i][k] = SubBytes(p_i ^ k)
+            else:                                       # Key 1
+                t_i = getByte(TWEAKS[i], byte_i)
+                V[i][k] = SubBytes((p_i ^ t_i) ^ k)
     return V
 
 
@@ -125,41 +129,38 @@ def getHammingWeightMatrix(V):
             H[i][j] = hammingWeight(V[i][j])
     return H
 
-def getCorrcoef(inputs):
+def getCorrcoef(params):
     global PC_a, PC_h, CC
-    (i, j1, j2) = inputs
+    (i, j1, j2) = params
     PC_h = ctypeslib.as_array(PC_h)
     PC_a = ctypeslib.as_array(PC_a)
-    CC = ctypeslib.as_array(CC)
+    CC   = ctypeslib.as_array(CC)
     cor = corrcoef(PC_h[i], PC_a[j1:j2])[0][1]
     CC[i][j1:j2] = cor
 
-def attackByte(byte_i, plaintexts, traces, attackType):
+def attackByte(byte_i, texts, traces, attackType):
     global PC_a, PC_h, CC
-    start = time.time()
-
     # Get hypothetical intermediate values
-    IV = getIntermediateValues(byte_i, plaintexts, attackType)
+    IV = getIntermediateValues(byte_i, texts, attackType)
     # Power Consumption hypothetical
     PC_h = getHammingWeightMatrix(IV).transpose()
     # Power Consumption actual
     PC_a = matrix(traces).transpose()[:TRACE_NUM] if attackType == 2 else matrix(traces).transpose()[len(traces[0]) - TRACE_NUM : len(traces[0])]
 
     chunks = TRACE_NUM / CHUNKSIZE
-    inputs = []
+    params = []
     for i in range(0, KEY_RANGE):
         for j in range(chunks):
             j1 = j * CHUNKSIZE
             j2 = (j + 1) * CHUNKSIZE
-            inputs.append( (i, j1, j2) )
+            params.append( (i, j1, j2) )
 
+    # Create pools for multiprocessing and link to shared data structures
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=_init, initargs=(PC_a,PC_h, CC,))
-    pool.map(getCorrcoef, inputs)
+    pool.map(getCorrcoef, params)
     pool.close()
     pool.join()
 
-    end = time.time()
-    print "Decryption time: %ds" % (end - start)
     return CC
 
 def AttackBytes(texts, traces, attackType):
@@ -168,9 +169,10 @@ def AttackBytes(texts, traces, attackType):
     keyByte = 0
 
     for i in range(16):
+        start = time.time()
 
-        print "\nAttacking %d Byte..." % i
 
+        # Get current coefficient values
         R = attackByte(i, texts, traces, attackType)
         max_coeff = R[0].max()
 
@@ -182,14 +184,18 @@ def AttackBytes(texts, traces, attackType):
                 max_coeff = current_coeff
                 keyByte = k
 
-        print "Confidence: %f" % max_coeff
-
         if (MINCONFIDENCE > max_coeff) :
             MINCONFIDENCE = max_coeff
 
-        newByte = toHex(keyByte)
-        printComparison(newByte, i, attackType)
-        key1 += newByte
+        key1 += toHex(keyByte)
+
+        end = time.time()
+
+        # printComparison(toHex(keyByte), i, attackType)
+        print "  Byte " + str(i) + ": " + toHex(keyByte)
+        print "    Confidence:  %f"   % max_coeff
+        print "    Time:        %ds"  % (end - start)
+        print "    Key:         %s\n" % key1
 
     return key1
 
@@ -203,16 +209,15 @@ def Attack():
     traces = sameLengthTraceSets(traces)
 
     # Attack key 2
-    print "\nAttacking Key 2:"
+    print "\nAttacking Key 2...\n"
     key2 = AttackBytes(inputs, traces, 2)
 
-    # key2 = "2BDC1E95C035F9520ACF58EEC0C30B88"
     print "\nKey 2: " + key2
 
     generateTweakValues(inputs, key2)
 
     # Attack key 1
-    print "\nAttacking Key 1:"
+    print "\nAttacking Key 1..."
     key1 = AttackBytes(outputs, traces, 1)
 
     print "\nKey 1: " + key1
@@ -230,6 +235,8 @@ if (__name__ == "__main__"):
     target_out = target.stdout
     target_in = target.stdin
 
+    start = time.time()
+
     key1, key2 = Attack()
 
 
@@ -242,8 +249,10 @@ if (__name__ == "__main__"):
         SAMPLES *= 2
         Attack()
 
-    print "\nGuess: key: " + key1 + key2
-    print "True : Key: " + "4BD55725A2D190A44D73764FE3EC68F7" + "2BDC1E95C035F9520ACF58EEC0C30B88"
+    end = time.time()
+
+    print "\nkey: " + key1 + key2
+    print "Decryption time: %ds" % (end - start)
     print "Oracle uses:", str(SAMPLES)
     print "Number of traces per attack:", str(TRACE_NUM)
 
