@@ -1,7 +1,10 @@
-# Applied-Security---Assignment-2-3
+# Applied-Security - Attacks
 
 
 $ vagrant up
 
 Connect using Pycharm
 
+- Timing attacks
+- Fault attacks
+- Power attacks
